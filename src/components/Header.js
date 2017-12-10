@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import { AppBar, Toolbar, Typography, IconButton, Button } from 'material-ui'
 import MenuIcon from 'material-ui-icons/Menu'
+import AccountCircle from 'material-ui-icons/AccountCircle'
 import { withStyles } from 'material-ui/styles'
 import { Link } from 'react-router-dom'
 import { withRouter } from 'react-router'
 import { GC_USER_ID, GC_AUTH_TOKEN } from '../constants'
+import Menu, { MenuItem } from 'material-ui/Menu'
 
 const styles = theme => ({
   flex: {
@@ -17,16 +19,33 @@ const styles = theme => ({
 })
 
 class Header extends Component {
-  logout = () => {
+  state = {
+    anchorEl: null
+  }
+
+  handleLogout = () => {
     localStorage.removeItem(GC_USER_ID)
     localStorage.removeItem(GC_AUTH_TOKEN)
+    this.handleRequestClose()
     this.props.history.push('/')
+  }
+  handleMenu = event => {
+    this.setState({ anchorEl: event.currentTarget })
+  }
+  handleProfileLink = () => {
+    this.handleRequestClose()
+    this.props.history.push('/me')
+  }
+  handleRequestClose = () => {
+    this.setState({ anchorEl: null })
   }
 
   render() {
     const userId = localStorage.getItem(GC_USER_ID)
     const { classes } = this.props
     const { pathname } = this.props.location
+    const { anchorEl } = this.state
+    const open = Boolean(anchorEl)
 
     return (
       <div className="Header">
@@ -43,9 +62,33 @@ class Header extends Component {
               {this.props.title}
             </Typography>
             {userId ? (
-              <Button onClick={this.logout} color="contrast">
-                Logout
-              </Button>
+              <div>
+                <IconButton
+                  aria-owns={open ? 'menu-appbar' : null}
+                  aria-haspopup="true"
+                  onClick={this.handleMenu}
+                  color="contrast"
+                >
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right'
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right'
+                  }}
+                  open={open}
+                  onRequestClose={this.handleRequestClose}
+                >
+                  <MenuItem onClick={this.handleProfileLink}>Profile</MenuItem>
+                  <MenuItem onClick={this.handleLogout}>Log out</MenuItem>
+                </Menu>
+              </div>
             ) : (
               pathname !== '/login' && (
                 <Button component={Link} to="/login" color="contrast">
