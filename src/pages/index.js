@@ -4,12 +4,13 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from 'material-ui/styles'
 import withRoot from '../components/withRoot'
-import { Switch, Route } from 'react-router-dom'
-
+import { Route, Switch } from 'react-router-dom'
 import About from './About'
 import Welcome from './Welcome'
 import UserProfile from './UserProfile'
 import Login from './Login'
+import Students from './Students'
+import NotFound from './NotFound'
 
 const styles = theme => ({
   root: {
@@ -28,9 +29,11 @@ class Index extends Component {
       <div className={classes.root}>
         <Switch>
           <Route exact path="/" component={Welcome} />
-          <Route exact path="/about" component={About} />
-          <Route exact path="/me" component={UserProfile} />
-          <Route exact path="/login" component={Login} />
+          <Route path="/about" component={About} />
+          <Route path="/me" component={UserProfile} />
+          <Route path="/login" component={Login} />
+          <Route path="/students" component={Students} />
+          <Route component={NotFound} />
         </Switch>
       </div>
     )
