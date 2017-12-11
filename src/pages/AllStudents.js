@@ -14,6 +14,7 @@ import gql from 'graphql-tag'
 import Header from '../components/Header'
 import GroupsList from '../components/GroupsList'
 import StudentsList from '../components/StudentsList'
+import { alphabetizeByName } from '../utilityFunctions'
 
 const styles = theme => ({
   paper: {
@@ -51,19 +52,7 @@ class AllStudents extends Component {
       return <div>Loading</div>
     }
     const groups = this.props.allGroupsQuery.allGroups
-    // alphabetize the groups
-    const sortedGroups = [...groups].sort((a, b) => {
-      var nameA = a.name.toUpperCase()
-      var nameB = b.name.toUpperCase()
-      if (nameA < nameB) {
-        return -1
-      }
-      if (nameA > nameB) {
-        return 1
-      }
-
-      return 0
-    })
+    const sortedGroups = alphabetizeByName([...groups])
     const lonelyStudents = this.props.allLonelyStudentsQuery.allStudents
     const { classes } = this.props
     return (

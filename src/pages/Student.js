@@ -6,6 +6,7 @@ import gql from 'graphql-tag'
 import Header from '../components/Header'
 import StudentNotFound from '../components/StudentNotFound'
 import StudentForm from '../components/StudentForm'
+import { alphabetizeByName } from '../utilityFunctions'
 
 class Student extends Component {
   render() {
@@ -13,19 +14,8 @@ class Student extends Component {
       return <div>Loading</div>
     }
     const groups = this.props.justGroupsQuery.allGroups
-    // alphabetize the groups
-    const sortedGroups = [...groups].sort((a, b) => {
-      var nameA = a.name.toUpperCase()
-      var nameB = b.name.toUpperCase()
-      if (nameA < nameB) {
-        return -1
-      }
-      if (nameA > nameB) {
-        return 1
-      }
+    const sortedGroups = alphabetizeByName([...groups])
 
-      return 0
-    })
     if (this.props.studentQuery && this.props.studentQuery.loading) {
       return <div>Loading</div>
     }

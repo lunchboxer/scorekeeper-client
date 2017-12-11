@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { withStyles } from 'material-ui/styles'
-import { Button, TextField, Divider } from 'material-ui'
+import { Button, TextField, Divider, Typography } from 'material-ui'
 import Card, { CardActions, CardContent } from 'material-ui/Card'
 import Radio, { RadioGroup } from 'material-ui/Radio'
 import { FormControlLabel } from 'material-ui/Form'
@@ -58,6 +58,7 @@ class StudentForm extends Component {
     this.setState({ deleteDialogOpen: false })
     this.setState({ groupToDelete: {} })
   }
+
   revertForm = () => {
     const student = this.props.student ? this.props.student : {}
     if (student.group) {
@@ -188,15 +189,22 @@ class StudentForm extends Component {
 
             {this.props.match.params.id !== 'new' && (
               <div className={classes.deleteArea}>
-                <Button
-                  dense
-                  raised
-                  color="primary"
-                  onClick={() => this.handleDeleteDialog(student)}
-                >
-                  Delete student
-                  <Delete className={classes.rightIcon} />
-                </Button>
+                {student.points.length === 0 ? (
+                  <Button
+                    dense
+                    raised
+                    color="primary"
+                    onClick={() => this.handleDeleteDialog(student)}
+                  >
+                    Delete student
+                    <Delete className={classes.rightIcon} />
+                  </Button>
+                ) : (
+                  <Typography type="body1">
+                    Student has {student.points.length} points associated.
+                    Student can't be deleted until they are removed.
+                  </Typography>
+                )}
               </div>
             )}
           </CardContent>
