@@ -3,15 +3,15 @@
 import { create, SheetsRegistry } from 'jss'
 import preset from 'jss-preset-default'
 import { createMuiTheme } from 'material-ui/styles'
-import { pink, purple } from 'material-ui/colors'
+import { purple, blue } from 'material-ui/colors'
 import createGenerateClassName from 'material-ui/styles/createGenerateClassName'
 import 'typeface-roboto'
 
 const theme = createMuiTheme({
   palette: {
     type: 'dark',
-    primary: pink,
-    secondary: purple
+    secondary: purple,
+    primary: blue
   }
 })
 
