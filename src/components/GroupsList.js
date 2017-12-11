@@ -12,6 +12,7 @@ import Dialog, {
   DialogContentText,
   DialogTitle
 } from 'material-ui/Dialog'
+import Delete from 'material-ui-icons/Delete'
 
 import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
@@ -100,28 +101,28 @@ class GroupsList extends Component {
           onRequestClose={this.handleDeleteDialogClose}
         >
           <DialogTitle>
-            Are you sure you want to delete the group "{
-              this.state.groupToDelete.name
-            }"?
+            Delete the group "{this.state.groupToDelete.name}"?
           </DialogTitle>
           <DialogContent>
-            <DialogContentText />
+            <DialogContentText>This cannot be undone.</DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button
+              dense
               onClick={() =>
                 this.handleDeleteGroup(this.state.groupToDelete.id)
               }
               color="primary"
             >
-              I'm sure, Delete it
+              Yes, Delete it
+              <Delete />
             </Button>
             <Button
               onClick={this.handleDeleteDialogClose}
-              color="primary"
+              color="contrast"
               autoFocus
             >
-              No
+              Nevermind
             </Button>
           </DialogActions>
         </Dialog>

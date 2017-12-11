@@ -6,6 +6,7 @@ import Dialog, {
   DialogContent,
   DialogTitle
 } from 'material-ui/Dialog'
+import { Link } from 'react-router-dom'
 
 import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
@@ -36,10 +37,6 @@ class AllStudents extends Component {
   handleNewClassClose = () => {
     this.setState({ newGroupDialogOpen: false })
   }
-  handleNewStudentClose = () => {
-    this.setState({ newStudentDialogOpen: false })
-  }
-
   handleChange = prop => event => {
     this.setState({ [prop]: event.target.value })
   }
@@ -75,49 +72,12 @@ class AllStudents extends Component {
         <Paper className={classes.paper}>
           <Button
             className={classes.actionButton}
-            onClick={() => this.setState({ newStudentDialogOpen: true })}
+            component={Link}
+            to="/student/new/"
             raised
           >
             Add a student
           </Button>
-          <Dialog
-            open={this.state.newStudentDialogOpen}
-            onRequestClose={this.handleNewStudentClose}
-          >
-            <DialogTitle>Add a new Student</DialogTitle>
-            <DialogContent>
-              <TextField
-                autoFocus
-                margin="dense"
-                id="chineseName"
-                label="Chinese name"
-                type="text"
-                fullWidth
-              />
-              <TextField
-                margin="dense"
-                id="PinyinName"
-                label="Pinyin name"
-                type="text"
-                fullWidth
-              />
-              <TextField
-                margin="dense"
-                id="englishName"
-                label="English Name"
-                type="text"
-                fullWidth
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={this.handleNewStudentClose} color="primary">
-                Cancel
-              </Button>
-              <Button onClick={this.handleNewStudentClose} color="primary">
-                Create
-              </Button>
-            </DialogActions>
-          </Dialog>
 
           <Button
             className={classes.actionButton}
@@ -174,7 +134,7 @@ class AllStudents extends Component {
               <Typography type="subheading" className={classes.title}>
                 Students not assigned to a class
               </Typography>
-              <Typography type="body1">(click to assign)</Typography>
+              <Typography type="body1">(click to edit)</Typography>
               <StudentsList students={lonelyStudents} groups={sortedGroups} />
             </div>
           )}

@@ -9,6 +9,23 @@ import StudentForm from '../components/StudentForm'
 
 class Student extends Component {
   render() {
+    if (this.props.justGroupsQuery && this.props.justGroupsQuery.loading) {
+      return <div>Loading</div>
+    }
+    const groups = this.props.justGroupsQuery.allGroups
+    // alphabetize the groups
+    const sortedGroups = [...groups].sort((a, b) => {
+      var nameA = a.name.toUpperCase()
+      var nameB = b.name.toUpperCase()
+      if (nameA < nameB) {
+        return -1
+      }
+      if (nameA > nameB) {
+        return 1
+      }
+
+      return 0
+    })
     if (this.props.studentQuery && this.props.studentQuery.loading) {
       return <div>Loading</div>
     }
@@ -16,7 +33,7 @@ class Student extends Component {
       return (
         <div className="Student">
           <Header title="View Student" />
-          <StudentForm />
+          <StudentForm groups={sortedGroups} />
         </div>
       )
     }
@@ -28,7 +45,7 @@ class Student extends Component {
         return (
           <div className="Student">
             <Header title="View Student" />
-            <StudentForm student={student} />
+            <StudentForm student={student} groups={sortedGroups} />
           </div>
         )
       }
@@ -49,6 +66,19 @@ const STUDENT_QUERY = gql`
         name
         id
       }
+      points {
+        id
+        createdAt
+        value
+      }
+    }
+  }
+`
+const JUST_GROUPS_QUERY = gql`
+  query JustGroupsQuery {
+    allGroups {
+      id
+      name
     }
   }
 `
@@ -60,5 +90,6 @@ export default compose(
       return match.params.id === 'new'
     },
     options: ({ match }) => ({ variables: { id: match.params.id } })
-  })
+  }),
+  graphql(JUST_GROUPS_QUERY, { name: 'justGroupsQuery' })
 )(Student)
