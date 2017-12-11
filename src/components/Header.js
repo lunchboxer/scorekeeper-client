@@ -7,6 +7,9 @@ import { Link } from 'react-router-dom'
 import { withRouter } from 'react-router'
 import { GC_USER_ID, GC_AUTH_TOKEN } from '../constants'
 import Menu, { MenuItem } from 'material-ui/Menu'
+import Drawer from 'material-ui/Drawer'
+
+import NavMenu from './NavMenu'
 
 const styles = theme => ({
   flex: {
@@ -20,9 +23,16 @@ const styles = theme => ({
 
 class Header extends Component {
   state = {
-    anchorEl: null
+    anchorEl: null,
+    drawerOpen: false
   }
 
+  handleCloseDrawer = () => {
+    this.setState({ drawerOpen: false })
+  }
+  handleOpenDrawer = () => {
+    this.setState({ drawerOpen: true })
+  }
   handleLogout = () => {
     localStorage.removeItem(GC_USER_ID)
     localStorage.removeItem(GC_AUTH_TOKEN)
@@ -49,12 +59,26 @@ class Header extends Component {
 
     return (
       <div className="Header">
+        <Drawer
+          open={this.state.drawerOpen}
+          onRequestClose={this.handleCloseDrawer}
+        >
+          <div
+            tabIndex={0}
+            role="button"
+            onClick={this.handleCloseDrawer}
+            onKeyDown={this.handleCloseDrawer}
+          >
+            <NavMenu />
+          </div>
+        </Drawer>
         <AppBar>
           <Toolbar>
             <IconButton
               className={classes.menuButton}
               color="contrast"
               aria-label="Menu"
+              onClick={this.handleOpenDrawer}
             >
               <MenuIcon />
             </IconButton>
