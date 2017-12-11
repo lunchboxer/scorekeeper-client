@@ -17,10 +17,6 @@ import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
 
 const styles = theme => ({
-  paper: {
-    padding: theme.spacing.unit * 2,
-    color: theme.palette.text.secondary
-  },
   title: {
     marginTop: theme.spacing.unit
   },
