@@ -36,7 +36,7 @@ class NavMenu extends Component {
       { Home: '/' },
       { 'Student List': '/students/' },
       { 'My Profile': '/me' },
-      { 'About scorekeeper': '/about' }
+      { 'About Scorekeeper': '/about' }
     ]
 
     return (
