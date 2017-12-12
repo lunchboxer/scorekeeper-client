@@ -13,13 +13,11 @@ import Dialog, {
   DialogTitle
 } from 'material-ui/Dialog'
 import Delete from 'material-ui-icons/Delete'
-
 import { graphql, compose } from 'react-apollo'
-import gql from 'graphql-tag'
-
 import { withStyles } from 'material-ui/styles'
 
 import StudentsList from './StudentsList'
+import { DELETE_GROUP_MUTATION } from '../queries'
 
 const styles = theme => ({
   GroupsList: {
@@ -130,14 +128,6 @@ class GroupsList extends Component {
     )
   }
 }
-
-const DELETE_GROUP_MUTATION = gql`
-  mutation DeleteGroupMutation($id: ID!) {
-    deleteGroup(id: $id) {
-      id
-    }
-  }
-`
 
 export default compose(
   graphql(DELETE_GROUP_MUTATION, { name: 'deleteGroupMutation' }),

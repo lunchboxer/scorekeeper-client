@@ -9,12 +9,16 @@ import Dialog, {
 import { Link } from 'react-router-dom'
 
 import { graphql, compose } from 'react-apollo'
-import gql from 'graphql-tag'
 
 import Header from '../components/Header'
 import GroupsList from '../components/GroupsList'
 import StudentsList from '../components/StudentsList'
 import { alphabetizeByName } from '../utilityFunctions'
+import {
+  ALL_GROUPS_QUERY,
+  ALL_STUDENTS_FILTER_GROUP_QUERY,
+  CREATE_GROUP_MUTATION
+} from '../queries'
 
 const styles = theme => ({
   paper: {
@@ -80,7 +84,7 @@ class AllStudents extends Component {
             open={this.state.newGroupDialogOpen}
             onRequestClose={this.handleNewClassClose}
           >
-            <DialogTitle>Add a new Class</DialogTitle>
+            <DialogTitle>Add a new class</DialogTitle>
             <DialogContent>
               <TextField
                 autoFocus
@@ -153,49 +157,10 @@ class AllStudents extends Component {
   }
 }
 
-const ALL_GROUPS_QUERY = gql`
-  query AllGroupsQuery {
-    allGroups {
-      id
-      name
-      students {
-        id
-        englishName
-        chineseName
-        pinyinName
-        gender
-        dateOfBirth
-      }
-    }
-  }
-`
-const ALL_LONELY_STUDENTS_QUERY = gql`
-  query AllLonelyStudentsQuery($group: GroupFilter) {
-    allStudents(filter: { group: $group }) {
-      id
-      englishName
-      chineseName
-      pinyinName
-      gender
-      dateOfBirth
-    }
-  }
-`
-const LONELY_VARIABLES = { group: null }
-
-const CREATE_GROUP_MUTATION = gql`
-  mutation CreateGroupMutation($name: String!) {
-    createGroup(name: $name) {
-      id
-      name
-    }
-  }
-`
-
 export default compose(
-  graphql(ALL_LONELY_STUDENTS_QUERY, {
+  graphql(ALL_STUDENTS_FILTER_GROUP_QUERY, {
     name: 'allLonelyStudentsQuery',
-    options: { variables: LONELY_VARIABLES }
+    options: { variables: { group: null } }
   }),
   graphql(ALL_GROUPS_QUERY, { name: 'allGroupsQuery' }),
   graphql(CREATE_GROUP_MUTATION, { name: 'createGroupMutation' }),

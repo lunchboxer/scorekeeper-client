@@ -14,7 +14,11 @@ import Dialog, {
   DialogTitle
 } from 'material-ui/Dialog'
 import { graphql, compose } from 'react-apollo'
-import gql from 'graphql-tag'
+import {
+  DELETE_STUDENT_MUTATION,
+  UPDATE_STUDENT_MUTATION,
+  CREATE_STUDENT_MUTATION
+} from '../queries'
 
 const styles = theme => ({
   title: {
@@ -67,6 +71,8 @@ class StudentForm extends Component {
   }
   handleSave = async (student, formKeys) => {
     console.log(student)
+    console.log(this.state)
+    console.log(!!this.state.groupId)
     let studentMutationVariables = {}
     formKeys.forEach(key => {
       if (this.state[key] === '') {
@@ -79,40 +85,33 @@ class StudentForm extends Component {
       }
     })
     // group isn't included in formKeys, but it could be later
-    if (this.state.groupId) {
-      console.log('new groupId variable exists')
+    if (this.state.groupId === '') {
+      studentMutationVariables.groupId = null // unset in db
+    } else if (this.state.groupId) {
       if (this.state.groupId === '') {
-        console.log('new groupId gotta unset')
         studentMutationVariables.groupId = null // unset in db
       } else if (
         !student.group ||
         (student.group && this.state.groupId !== student.group.id)
       ) {
-        console.log('new group id is', this.state.groupId)
         studentMutationVariables.groupId = this.state.groupId
       } else {
-        console.log('but we did nothing')
       }
     }
-    console.log(studentMutationVariables)
+    // if nothing is changed, exit
+    if (Object.keys(studentMutationVariables).length === 0) {
+      return
+    }
     if (!student) {
-      //create a new student
-      // some fields may be '', we should convert these to null
-      // for updating we don't want to ignore blank or undefined since we
-      //want to allow unsetting values in db
       await this._createStudent(studentMutationVariables)
       // then redirect if no problems
       // no error handling or feedback yet so just go back to student list
+      this.props.history.push('/students/')
     } else {
-      // check if anything is changed before making the call.
-      if (Object.keys(studentMutationVariables).length > 0) {
-        studentMutationVariables.id = student.id
-        console.log('gonna update existing student')
-        await this._updateStudent(studentMutationVariables)
-      } else {
-        console.log('nothing to update')
-      }
-      // update an existing student record
+      studentMutationVariables.id = student.id
+      console.log('gonna update existing student')
+      await this._updateStudent(studentMutationVariables)
+      this.props.history.push('/students/')
     }
   }
 
@@ -298,74 +297,9 @@ class StudentForm extends Component {
     console.log(studentMutationVariables)
     await this.props.updateStudentMutation({
       variables: studentMutationVariables
-    }) // cache updated for free!
+    }) // for groups doesn't update automatically.
   }
 }
-
-const DELETE_STUDENT_MUTATION = gql`
-  mutation DeleteStudentMutation($id: ID!) {
-    deleteStudent(id: $id) {
-      id
-    }
-  }
-`
-
-const CREATE_STUDENT_MUTATION = gql`
-  mutation CreateStudentMutation(
-    $chineseName: String!
-    $englishName: String
-    $gender: Gender
-    $dateOfBirth: DateTime
-    $groupId: ID
-    $pinyinName: String
-  ) {
-    createStudent(
-      chineseName: $chineseName
-      pinyinName: $pinyinName
-      englishName: $englishName
-      gender: $gender
-      dateOfBirth: $dateOfBirth
-      groupId: $groupId
-    ) {
-      id
-      chineseName
-      group {
-        id
-      }
-      pinyinName
-      englishName
-    }
-  }
-`
-const UPDATE_STUDENT_MUTATION = gql`
-  mutation UpdateStudentMutation(
-    $id: ID!
-    $gender: Gender
-    $englishName: String
-    $chineseName: String
-    $pinyinName: String
-    $dateOfBirth: DateTime
-    $groupId: ID
-  ) {
-    updateStudent(
-      id: $id
-      chineseName: $chineseName
-      pinyinName: $pinyinName
-      englishName: $englishName
-      gender: $gender
-      dateOfBirth: $dateOfBirth
-      groupId: $groupId
-    ) {
-      id
-      chineseName
-      englishName
-      pinyinName
-      group {
-        id
-      }
-    }
-  }
-`
 
 StudentForm = withRouter(StudentForm)
 export default compose(

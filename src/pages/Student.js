@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 
 import { graphql, compose } from 'react-apollo'
-import gql from 'graphql-tag'
 
 import Header from '../components/Header'
 import StudentNotFound from '../components/StudentNotFound'
 import StudentForm from '../components/StudentForm'
 import { alphabetizeByName } from '../utilityFunctions'
+import { JUST_GROUPS_QUERY, STUDENT_QUERY } from '../queries'
 
 class Student extends Component {
   render() {
@@ -43,35 +43,6 @@ class Student extends Component {
   }
 }
 
-const STUDENT_QUERY = gql`
-  query StudentQuery($id: ID!) {
-    Student(id: $id) {
-      id
-      englishName
-      chineseName
-      pinyinName
-      gender
-      dateOfBirth
-      group {
-        name
-        id
-      }
-      points {
-        id
-        createdAt
-        value
-      }
-    }
-  }
-`
-const JUST_GROUPS_QUERY = gql`
-  query JustGroupsQuery {
-    allGroups {
-      id
-      name
-    }
-  }
-`
 // const STUDENT_QUERY_VARIABLES = { id: this.props.match.params.id }
 export default compose(
   graphql(STUDENT_QUERY, {
