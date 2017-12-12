@@ -33,6 +33,13 @@ class StudentForm extends Component {
     deleteDialogOpen: false,
     studentToDelete: {}
   }
+  unCamelCase = string =>
+    string
+      .replace(/([a-z])([A-Z])/g, '$1 $2')
+      .replace(/\b([A-Z]+)([A-Z])([a-z])/, '$1 $2$3')
+      .replace(/^./, function(s) {
+        return s.toUpperCase()
+      })
 
   handleChange = prop => event => {
     this.setState({ [prop]: event.target.value })
@@ -58,21 +65,77 @@ class StudentForm extends Component {
     this.setState({ deleteDialogOpen: false })
     this.setState({ groupToDelete: {} })
   }
+  handleSave = async (student, formKeys) => {
+    console.log(student)
+    let studentMutationVariables = {}
+    formKeys.forEach(key => {
+      if (this.state[key] === '') {
+        studentMutationVariables[key] = null // unset in db
+      } else if (this.state[key]) {
+        if (!student || this.state[key] !== student[key]) {
+          // update the value only if it's different, unless new
+          studentMutationVariables[key] = this.state[key]
+        }
+      }
+    })
+    // group isn't included in formKeys, but it could be later
+    if (this.state.groupId) {
+      console.log('new groupId variable exists')
+      if (this.state.groupId === '') {
+        console.log('new groupId gotta unset')
+        studentMutationVariables.groupId = null // unset in db
+      } else if (
+        !student.group ||
+        (student.group && this.state.groupId !== student.group.id)
+      ) {
+        console.log('new group id is', this.state.groupId)
+        studentMutationVariables.groupId = this.state.groupId
+      } else {
+        console.log('but we did nothing')
+      }
+    }
+    console.log(studentMutationVariables)
+    if (!student) {
+      //create a new student
+      // some fields may be '', we should convert these to null
+      // for updating we don't want to ignore blank or undefined since we
+      //want to allow unsetting values in db
+      await this._createStudent(studentMutationVariables)
+      // then redirect if no problems
+      // no error handling or feedback yet so just go back to student list
+    } else {
+      // check if anything is changed before making the call.
+      if (Object.keys(studentMutationVariables).length > 0) {
+        studentMutationVariables.id = student.id
+        console.log('gonna update existing student')
+        await this._updateStudent(studentMutationVariables)
+      } else {
+        console.log('nothing to update')
+      }
+      // update an existing student record
+    }
+  }
 
-  revertForm = () => {
+  // group has different behavior because it's an object, not a string
+  inputValueOldOrNew = (student, field) => {
+    if (this.state[field] === '') {
+      return ''
+    } else if (this.state[field]) {
+      return this.state[field]
+    } else if (student[field]) {
+      return student[field]
+    } else {
+      return ''
+    }
+  }
+
+  revertForm = formKeys => {
     const student = this.props.student ? this.props.student : {}
     if (student.group) {
       this.setState({ group: student.group.id })
     } else {
       this.setState({ group: '' })
     }
-    const formKeys = [
-      'chineseName',
-      'englishName',
-      'pinyinName',
-      'gender',
-      'dateOfBirth'
-    ]
     formKeys.forEach(key => {
       let reset = student[key] ? student[key] : ''
       this.setState({ [key]: reset })
@@ -80,52 +143,34 @@ class StudentForm extends Component {
   }
 
   render() {
-    const student = this.props.student ? this.props.student : {}
+    const formKeys = [
+      'chineseName',
+      'englishName',
+      'pinyinName',
+      'gender',
+      'dateOfBirth'
+    ]
+    const student = this.props.student ? this.props.student : false
     const { classes, groups } = this.props
     return (
       <div className="StudentForm">
         <Card>
           <CardContent>
-            <TextField
-              margin="dense"
-              id="chineseName"
-              label="Chinese name"
-              value={
-                this.state.chineseName
-                  ? this.state.chineseName
-                  : student.chineseName ? student.chineseName : ''
-              }
-              type="text"
-              onChange={this.handleChange('chineseName')}
-              fullWidth
-            />
-            <TextField
-              margin="dense"
-              id="PinyinName"
-              label="Pinyin name"
-              type="text"
-              value={
-                this.state.pinyinName
-                  ? this.state.pinyinName
-                  : student.pinyinName ? student.pinyinName : ''
-              }
-              onChange={this.handleChange('pinyinName')}
-              fullWidth
-            />
-            <TextField
-              margin="dense"
-              id="englishName"
-              label="English Name"
-              type="text"
-              value={
-                // this can be refactored into a function
-                this.state.englishName
-                  ? this.state.englishName
-                  : student.englishName ? student.englishName : ''
-              }
-              onChange={this.handleChange('englishName')}
-              fullWidth
-            />
+            {/* make formKeys a little more sophisticated and draw from it, esp text or required */}
+            {['chineseName', 'pinyinName', 'englishName'].map(
+              (field, index) => (
+                <TextField
+                  margin="dense"
+                  id={field}
+                  key={index}
+                  label={this.unCamelCase(field)}
+                  value={this.inputValueOldOrNew(student, field)}
+                  type="text"
+                  onChange={this.handleChange(field)}
+                  fullWidth
+                />
+              )
+            )}
             <TextField
               margin="dense"
               id="select-group"
@@ -133,14 +178,13 @@ class StudentForm extends Component {
               label="Assigned class"
               className={classes.textField}
               value={
-                // this can be refactored into a function
-                this.state.group === ''
+                this.state.groupId === ''
                   ? ''
-                  : this.state.group
-                    ? this.state.group
+                  : this.state.groupId
+                    ? this.state.groupId
                     : student.group ? student.group.id : ''
               }
-              onChange={this.handleChange('group')}
+              onChange={this.handleChange('groupId')}
               fullWidth
               SelectProps={{
                 MenuProps: {
@@ -162,11 +206,7 @@ class StudentForm extends Component {
               aria-label="gender"
               name="gender"
               className={classes.group}
-              value={
-                this.state.gender
-                  ? this.state.gender
-                  : student.gender ? student.gender : null
-              }
+              value={this.inputValueOldOrNew(student, 'gender')}
               onChange={this.handleChange('gender')}
             >
               <FormControlLabel value="M" control={<Radio />} label="Male" />
@@ -176,10 +216,10 @@ class StudentForm extends Component {
               id="date"
               label="Date of Birth"
               type="date"
-              value={(this.state.dateOfBirth
-                ? this.state.dateOfBirth
-                : student.dateOfBirth ? student.dateOfBirth : '2011-12-20'
-              ).slice(0, 10)}
+              value={this.inputValueOldOrNew(student, 'dateOfBirth').slice(
+                0,
+                10
+              )}
               onChange={this.handleChange('dateOfBirth')}
               className={classes.textField}
               InputLabelProps={{
@@ -211,8 +251,10 @@ class StudentForm extends Component {
           <Divider />
           <CardActions>
             <Button onClick={this.handleCancel}>Cancel</Button>
-            <Button onClick={this.revertForm}>Reset</Button>
-            <Button>Save</Button>
+            <Button onClick={() => this.revertForm(formKeys)}>Reset</Button>
+            <Button onClick={() => this.handleSave(student, formKeys)}>
+              Save
+            </Button>
           </CardActions>
         </Card>
         <Dialog
@@ -247,7 +289,19 @@ class StudentForm extends Component {
       </div>
     )
   }
+  _createStudent = async studentMutationVariables => {
+    await this.props.createStudentMutation({
+      variables: studentMutationVariables
+    }) // also gotta update the apollo cache
+  }
+  _updateStudent = async studentMutationVariables => {
+    console.log(studentMutationVariables)
+    await this.props.updateStudentMutation({
+      variables: studentMutationVariables
+    }) // cache updated for free!
+  }
 }
+
 const DELETE_STUDENT_MUTATION = gql`
   mutation DeleteStudentMutation($id: ID!) {
     deleteStudent(id: $id) {
@@ -255,8 +309,68 @@ const DELETE_STUDENT_MUTATION = gql`
     }
   }
 `
+
+const CREATE_STUDENT_MUTATION = gql`
+  mutation CreateStudentMutation(
+    $chineseName: String!
+    $englishName: String
+    $gender: Gender
+    $dateOfBirth: DateTime
+    $groupId: ID
+    $pinyinName: String
+  ) {
+    createStudent(
+      chineseName: $chineseName
+      pinyinName: $pinyinName
+      englishName: $englishName
+      gender: $gender
+      dateOfBirth: $dateOfBirth
+      groupId: $groupId
+    ) {
+      id
+      chineseName
+      group {
+        id
+      }
+      pinyinName
+      englishName
+    }
+  }
+`
+const UPDATE_STUDENT_MUTATION = gql`
+  mutation UpdateStudentMutation(
+    $id: ID!
+    $gender: Gender
+    $englishName: String
+    $chineseName: String
+    $pinyinName: String
+    $dateOfBirth: DateTime
+    $groupId: ID
+  ) {
+    updateStudent(
+      id: $id
+      chineseName: $chineseName
+      pinyinName: $pinyinName
+      englishName: $englishName
+      gender: $gender
+      dateOfBirth: $dateOfBirth
+      groupId: $groupId
+    ) {
+      id
+      chineseName
+      englishName
+      pinyinName
+      group {
+        id
+      }
+    }
+  }
+`
+
 StudentForm = withRouter(StudentForm)
 export default compose(
   graphql(DELETE_STUDENT_MUTATION, { name: 'deleteStudentMutation' }),
+  graphql(CREATE_STUDENT_MUTATION, { name: 'createStudentMutation' }),
+  graphql(UPDATE_STUDENT_MUTATION, { name: 'updateStudentMutation' }),
   withStyles(styles)
 )(StudentForm)

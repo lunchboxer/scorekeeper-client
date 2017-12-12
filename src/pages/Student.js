@@ -22,7 +22,7 @@ class Student extends Component {
     if (this.props.match.params.id === 'new') {
       return (
         <div className="Student">
-          <Header title="View Student" />
+          <Header title="Add a Student" />
           <StudentForm groups={sortedGroups} />
         </div>
       )
