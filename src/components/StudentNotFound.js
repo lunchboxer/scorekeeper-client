@@ -10,7 +10,7 @@ const styles = theme => ({
     color: theme.palette.text.secondary
   },
   title: {
-    marginTop: theme.spacing.unit
+    margin: theme.spacing.unit
   },
   actionButton: {
     margin: theme.spacing.unit

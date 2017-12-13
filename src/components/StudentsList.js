@@ -17,9 +17,10 @@ class StudentsList extends Component {
     const classes = this.props.classes
     return (
       <div className="StudentsList">
-        <List dense>
+        <List>
           {students.map(student => (
             <ListItem
+              button
               component={Link}
               to={'/student/' + student.id}
               key={student.id}

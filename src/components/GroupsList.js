@@ -15,6 +15,7 @@ import Dialog, {
 import Delete from 'material-ui-icons/Delete'
 import { graphql, compose } from 'react-apollo'
 import { withStyles } from 'material-ui/styles'
+import { Link } from 'react-router-dom'
 
 import StudentsList from './StudentsList'
 import { DELETE_GROUP_MUTATION } from '../queries'
@@ -81,14 +82,17 @@ class GroupsList extends Component {
             <ExpansionPanelActions>
               {group.students.length === 0 && (
                 <Button
-                  dense
                   color="primary"
                   onClick={() => this.handleDeleteDialog(group)}
                 >
                   Delete
                 </Button>
               )}
-              <Button dense color="primary">
+              <Button
+                color="primary"
+                component={Link}
+                to={'/group/' + group.id}
+              >
                 Edit
               </Button>
             </ExpansionPanelActions>

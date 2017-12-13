@@ -8,7 +8,12 @@ import { MenuItem } from 'material-ui/Menu'
 import { withRouter } from 'react-router-dom'
 
 import { graphql, compose } from 'react-apollo'
-import { UPDATE_STUDENT_MUTATION, CREATE_STUDENT_MUTATION } from '../queries'
+import {
+  UPDATE_STUDENT_MUTATION,
+  CREATE_STUDENT_MUTATION,
+  ALL_GROUPS_QUERY,
+  ALL_STUDENTS_FILTER_GROUP_QUERY
+} from '../queries'
 import DeleteStudent from './DeleteStudent'
 
 const styles = theme => ({
@@ -208,13 +213,22 @@ class StudentForm extends Component {
   }
   _createStudent = async studentMutationVariables => {
     await this.props.createStudentMutation({
-      variables: studentMutationVariables
+      variables: studentMutationVariables,
+      refetchQueries: [
+        { query: ALL_GROUPS_QUERY },
+        { query: ALL_STUDENTS_FILTER_GROUP_QUERY, variables: { group: null } }
+      ]
     }) // also gotta update the apollo cache
   }
   _updateStudent = async studentMutationVariables => {
     console.log(studentMutationVariables)
     await this.props.updateStudentMutation({
-      variables: studentMutationVariables
+      variables: studentMutationVariables,
+      // the query to update is on a different page, maybe not fetched ever
+      refetchQueries: [
+        { query: ALL_GROUPS_QUERY },
+        { query: ALL_STUDENTS_FILTER_GROUP_QUERY, variables: { group: null } }
+      ]
     }) // for groups doesn't update automatically.
   }
 }

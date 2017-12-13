@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Typography, Paper, Button, TextField } from 'material-ui'
+import { Typography, Button, TextField } from 'material-ui'
 import { withStyles } from 'material-ui/styles'
 import Dialog, {
   DialogActions,
@@ -21,8 +21,10 @@ import {
 } from '../queries'
 
 const styles = theme => ({
-  paper: {
-    padding: theme.spacing.unit * 2,
+  container: {
+    padding: theme.spacing.unit,
+    paddingLeft: theme.spacing.unit * 2,
+    paddingRight: theme.spacing.unit * 2,
     color: theme.palette.text.secondary
   },
   title: {
@@ -45,6 +47,7 @@ class AllStudents extends Component {
   handleChange = prop => event => {
     this.setState({ [prop]: event.target.value })
   }
+
   render() {
     if (this.props.allGroupsQuery && this.props.allGroupsQuery.loading) {
       return <div>Loading</div>
@@ -55,14 +58,16 @@ class AllStudents extends Component {
     ) {
       return <div>Loading</div>
     }
+
     const groups = this.props.allGroupsQuery.allGroups
     const sortedGroups = alphabetizeByName([...groups])
     const lonelyStudents = this.props.allLonelyStudentsQuery.allStudents
     const { classes } = this.props
+
     return (
       <div className="Students">
         <Header title="Students" />
-        <Paper className={classes.paper}>
+        <div className={classes.container}>
           <Button
             className={classes.actionButton}
             component={Link}
@@ -79,59 +84,64 @@ class AllStudents extends Component {
           >
             Add a class
           </Button>
-
-          <Dialog
-            open={this.state.newGroupDialogOpen}
-            onRequestClose={this.handleNewClassClose}
-          >
-            <DialogTitle>Add a new class</DialogTitle>
-            <DialogContent>
-              <TextField
-                autoFocus
-                margin="dense"
-                id="name"
-                label="Class name"
-                type="text"
-                value={this.state.newClassName}
-                onChange={this.handleChange('newClassName')}
-                fullWidth
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={this.handleNewClassClose} color="primary">
-                Cancel
-              </Button>
-              <Button onClick={() => this._createGroup()} color="primary">
-                Create
-              </Button>
-            </DialogActions>
-          </Dialog>
-          {groups.length > 0 ? (
-            <div className={classes.groupedList}>
+        </div>
+        <Dialog
+          open={this.state.newGroupDialogOpen}
+          onRequestClose={this.handleNewClassClose}
+        >
+          <DialogTitle>Add a new class</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Class name"
+              type="text"
+              value={this.state.newClassName}
+              onChange={this.handleChange('newClassName')}
+              fullWidth
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleNewClassClose} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={() => this._createGroup()} color="primary">
+              Create
+            </Button>
+          </DialogActions>
+        </Dialog>
+        {groups.length > 0 ? (
+          <div className={classes.groupedList}>
+            <div className={classes.container}>
               <Typography type="subheading" className={classes.title}>
                 Students grouped by class
               </Typography>
               <Typography type="body1">(click a student to edit)</Typography>
-              <GroupsList
-                groups={sortedGroups}
-                updateStoreAfterDeleteGroup={this._updateCacheAfterDeleteGroup}
-              />
             </div>
-          ) : (
+            <GroupsList
+              groups={sortedGroups}
+              updateStoreAfterDeleteGroup={this._updateCacheAfterDeleteGroup}
+            />
+          </div>
+        ) : (
+          <div className={classes.container}>
             <Typography type="subheading" className={classes.title}>
               There are currently no groups
             </Typography>
-          )}
-          {lonelyStudents.length > 0 && (
-            <div>
+          </div>
+        )}
+        {lonelyStudents.length > 0 && (
+          <div>
+            <div className={classes.container}>
               <Typography type="subheading" className={classes.title}>
                 Students not assigned to a class
               </Typography>
               <Typography type="body1">(click to edit)</Typography>
-              <StudentsList students={lonelyStudents} groups={sortedGroups} />
             </div>
-          )}
-        </Paper>
+            <StudentsList students={lonelyStudents} groups={sortedGroups} />
+          </div>
+        )}
       </div>
     )
   }

@@ -11,7 +11,11 @@ import { withRouter } from 'react-router-dom'
 import { withStyles } from 'material-ui/styles'
 
 import { graphql, compose } from 'react-apollo'
-import { DELETE_STUDENT_MUTATION } from '../queries'
+import {
+  DELETE_STUDENT_MUTATION,
+  ALL_GROUPS_QUERY,
+  ALL_STUDENTS_FILTER_GROUP_QUERY
+} from '../queries'
 
 const styles = theme => ({
   title: {
@@ -36,8 +40,12 @@ class DeleteStudent extends Component {
     await this.props.deleteStudentMutation({
       variables: {
         id
-      }
-      // gotta update the cache
+      },
+      // gotta update the cache, queries on different page so just refetchQueries
+      refetchQueries: [
+        { query: ALL_GROUPS_QUERY },
+        { query: ALL_STUDENTS_FILTER_GROUP_QUERY, variables: { group: null } }
+      ]
     })
     this.props.history.push('/students')
   }

@@ -86,10 +86,48 @@ export const STUDENT_QUERY = gql`
     }
   }
 `
+export const ALL_STUDENTS_QUERY = gql`
+  query AllStudentQuery {
+    allStudents {
+      id
+      englishName
+      chineseName
+      pinyinName
+      gender
+      dateOfBirth
+      group {
+        name
+        id
+      }
+      points {
+        id
+        createdAt
+        value
+      }
+    }
+  }
+`
+
 // Groups
 export const ALL_GROUPS_QUERY = gql`
   query AllGroupsQuery {
     allGroups {
+      id
+      name
+      students {
+        id
+        englishName
+        chineseName
+        pinyinName
+        gender
+        dateOfBirth
+      }
+    }
+  }
+`
+export const GROUP_QUERY = gql`
+  query GroupQuery($id: ID!) {
+    Group(id: $id) {
       id
       name
       students {
@@ -124,9 +162,18 @@ export const ALL_STUDENTS_FILTER_GROUP_QUERY = gql`
     }
   }
 `
+// Group Mutations
 export const CREATE_GROUP_MUTATION = gql`
   mutation CreateGroupMutation($name: String!) {
     createGroup(name: $name) {
+      id
+      name
+    }
+  }
+`
+export const UPDATE_GROUP_MUTATION = gql`
+  mutation UpdateGroupMutation($id: ID!, $name: String) {
+    updateGroup(id: $id, name: $name) {
       id
       name
     }
@@ -136,6 +183,53 @@ export const DELETE_GROUP_MUTATION = gql`
   mutation DeleteGroupMutation($id: ID!) {
     deleteGroup(id: $id) {
       id
+    }
+  }
+`
+export const ADD_STUDENT_TO_GROUP_MUTATION = gql`
+  mutation AddStudentToGroup($groupID: ID!, $studentID: ID!) {
+    addToStudentInGroup(groupGroupId: $groupID, studentsStudentId: $studentID) {
+      studentsStudent {
+        id
+        englishName
+        chineseName
+        pinyinName
+        gender
+        dateOfBirth
+        group {
+          id
+        }
+      }
+      groupGroup {
+        id
+        name
+        students {
+          id
+        }
+      }
+    }
+  }
+`
+export const REMOVE_STUDENT_FROM_GROUP_MUTATION = gql`
+  mutation RemoveStudentFromGroup($groupID: ID!, $studentID: ID!) {
+    removeFromStudentInGroup(
+      groupGroupId: $groupID
+      studentsStudentId: $studentID
+    ) {
+      studentsStudent {
+        id
+        group {
+          id
+          name
+        }
+      }
+      groupGroup {
+        id
+        name
+        students {
+          id
+        }
+      }
     }
   }
 `
