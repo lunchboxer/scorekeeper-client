@@ -1,42 +1,24 @@
 import React, { Component } from 'react'
 import { withStyles } from 'material-ui/styles'
-import { Button, TextField, Divider, Typography } from 'material-ui'
+import { Button, TextField, Divider } from 'material-ui'
 import Card, { CardActions, CardContent } from 'material-ui/Card'
 import Radio, { RadioGroup } from 'material-ui/Radio'
 import { FormControlLabel } from 'material-ui/Form'
 import { MenuItem } from 'material-ui/Menu'
 import { withRouter } from 'react-router-dom'
-import Delete from 'material-ui-icons/Delete'
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle
-} from 'material-ui/Dialog'
+
 import { graphql, compose } from 'react-apollo'
-import {
-  DELETE_STUDENT_MUTATION,
-  UPDATE_STUDENT_MUTATION,
-  CREATE_STUDENT_MUTATION
-} from '../queries'
+import { UPDATE_STUDENT_MUTATION, CREATE_STUDENT_MUTATION } from '../queries'
+import DeleteStudent from './DeleteStudent'
 
 const styles = theme => ({
   title: {
     marginTop: theme.spacing.unit
-  },
-  actionButton: {
-    margin: theme.spacing.unit
-  },
-  deleteArea: {
-    marginTop: theme.spacing.unit * 2
   }
 })
 
 class StudentForm extends Component {
-  state = {
-    deleteDialogOpen: false,
-    studentToDelete: {}
-  }
+  state = {}
   unCamelCase = string =>
     string
       .replace(/([a-z])([A-Z])/g, '$1 $2')
@@ -51,24 +33,7 @@ class StudentForm extends Component {
   handleCancel = () => {
     this.props.history.push('/students')
   }
-  handleDeleteDialog = student => {
-    this.setState({ deleteDialogOpen: true })
-    this.setState({ studentToDelete: student })
-  }
-  handleDeleteStudent = async id => {
-    this.handleDeleteDialogClose()
-    await this.props.deleteStudentMutation({
-      variables: {
-        id
-      }
-      // gotta update the cache
-    })
-    this.props.history.push('/students')
-  }
-  handleDeleteDialogClose = () => {
-    this.setState({ deleteDialogOpen: false })
-    this.setState({ groupToDelete: {} })
-  }
+
   handleSave = async (student, formKeys) => {
     console.log(student)
     console.log(this.state)
@@ -225,26 +190,8 @@ class StudentForm extends Component {
                 shrink: true
               }}
             />
-
             {this.props.match.params.id !== 'new' && (
-              <div className={classes.deleteArea}>
-                {student.points.length === 0 ? (
-                  <Button
-                    dense
-                    raised
-                    color="primary"
-                    onClick={() => this.handleDeleteDialog(student)}
-                  >
-                    Delete student
-                    <Delete className={classes.rightIcon} />
-                  </Button>
-                ) : (
-                  <Typography type="body1">
-                    Student has {student.points.length} points associated.
-                    Student can't be deleted until they are removed.
-                  </Typography>
-                )}
-              </div>
+              <DeleteStudent student={student} />
             )}
           </CardContent>
           <Divider />
@@ -256,35 +203,6 @@ class StudentForm extends Component {
             </Button>
           </CardActions>
         </Card>
-        <Dialog
-          open={this.state.deleteDialogOpen}
-          onRequestClose={this.handleDeleteDialogClose}
-        >
-          <DialogTitle>
-            Delete student: {this.state.studentToDelete.chineseName}?
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText>This cannot be undone.</DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              dense
-              onClick={() =>
-                this.handleDeleteStudent(this.state.studentToDelete.id)
-              }
-              color="primary"
-            >
-              Yes, Delete it
-            </Button>
-            <Button
-              onClick={this.handleDeleteDialogClose}
-              color="contrast"
-              autoFocus
-            >
-              Nevermind
-            </Button>
-          </DialogActions>
-        </Dialog>
       </div>
     )
   }
@@ -303,7 +221,6 @@ class StudentForm extends Component {
 
 StudentForm = withRouter(StudentForm)
 export default compose(
-  graphql(DELETE_STUDENT_MUTATION, { name: 'deleteStudentMutation' }),
   graphql(CREATE_STUDENT_MUTATION, { name: 'createStudentMutation' }),
   graphql(UPDATE_STUDENT_MUTATION, { name: 'updateStudentMutation' }),
   withStyles(styles)
