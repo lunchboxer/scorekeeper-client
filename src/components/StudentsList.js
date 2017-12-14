@@ -31,9 +31,7 @@ class StudentsList extends Component {
                 secondary={
                   student.chineseName + ' (' + student.pinyinName + ')'
                 }
-                primary={
-                  student.englishName ? student.englishName : 'no English name'
-                }
+                primary={student.englishName || 'no English name'}
               />
             </ListItem>
           ))}

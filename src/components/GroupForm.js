@@ -60,10 +60,9 @@ class GroupForm extends Component {
           query: ALL_STUDENTS_FILTER_GROUP_QUERY,
           variables: { group: null }
         })
-        const toRemove = data.allStudents.findIndex(
-          lonelyStudent => lonelyStudent.id === student.id
+        data.allStudents = data.allStudents.filter(
+          lonelyStudent => lonelyStudent.id !== student.id
         )
-        data.allStudents.splice(toRemove, 1)
         store.writeQuery({
           query: ALL_STUDENTS_FILTER_GROUP_QUERY,
           variables: { group: null },
@@ -113,11 +112,7 @@ class GroupForm extends Component {
                     secondary={
                       student.chineseName + ' (' + student.pinyinName + ')'
                     }
-                    primary={
-                      student.englishName
-                        ? student.englishName
-                        : 'no English name'
-                    }
+                    primary={student.englishName || 'no English name'}
                   />
                   <ListItemSecondaryAction>
                     <IconButton
@@ -159,11 +154,7 @@ class GroupForm extends Component {
                     secondary={
                       student.chineseName + ' (' + student.pinyinName + ')'
                     }
-                    primary={
-                      student.englishName
-                        ? student.englishName
-                        : 'no English name'
-                    }
+                    primary={student.englishName || 'no English name'}
                   />
                   <ListItemSecondaryAction>
                     <IconButton

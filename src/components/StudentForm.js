@@ -99,14 +99,14 @@ class StudentForm extends Component {
   }
 
   revertForm = formKeys => {
-    const student = this.props.student ? this.props.student : {}
+    const student = this.props.student || {}
     if (student.group) {
       this.setState({ group: student.group.id })
     } else {
       this.setState({ group: '' })
     }
     formKeys.forEach(key => {
-      let reset = student[key] ? student[key] : ''
+      let reset = student[key] || ''
       this.setState({ [key]: reset })
     })
   }
@@ -119,7 +119,7 @@ class StudentForm extends Component {
       'gender',
       'dateOfBirth'
     ]
-    const student = this.props.student ? this.props.student : false
+    const student = this.props.student || false
     const { classes, groups } = this.props
     return (
       <div className="StudentForm">

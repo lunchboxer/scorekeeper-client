@@ -168,6 +168,9 @@ export const CREATE_GROUP_MUTATION = gql`
     createGroup(name: $name) {
       id
       name
+      students {
+        id
+      }
     }
   }
 `

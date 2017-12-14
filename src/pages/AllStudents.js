@@ -150,18 +150,23 @@ class AllStudents extends Component {
     const { newClassName } = this.state
     await this.props.createGroupMutation({
       variables: { name: newClassName },
-      refetchQueries: [
-        {
-          query: ALL_GROUPS_QUERY
-        }
-      ]
+      update: (store, { data: { createGroup } }) => {
+        const data = store.readQuery({ query: ALL_GROUPS_QUERY })
+        data.allGroups.push(createGroup)
+        store.writeQuery({ query: ALL_GROUPS_QUERY, data })
+      }
+      // refetchQueries: [
+      //   {
+      //     query: ALL_GROUPS_QUERY
+      //   }
+      // ]
     })
     this.setState({ newClassName: '' })
     this.handleNewClassClose()
   }
 
   _updateCacheAfterDeleteGroup = (store, deleteGroup) => {
-    const data = store.readQuery({ query: ALL_GROUPS_QUERY })
+    let data = store.readQuery({ query: ALL_GROUPS_QUERY })
     data.allGroups = data.allGroups.filter(group => group.id !== deleteGroup.id)
     store.writeQuery({ query: ALL_GROUPS_QUERY, data })
   }
