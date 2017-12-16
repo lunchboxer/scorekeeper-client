@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { withStyles } from 'material-ui/styles'
-import { Button, TextField, Divider } from 'material-ui'
-import Card, { CardActions, CardContent } from 'material-ui/Card'
+import { Button, TextField, Paper } from 'material-ui'
 import Radio, { RadioGroup } from 'material-ui/Radio'
 import { FormControlLabel } from 'material-ui/Form'
 import { MenuItem } from 'material-ui/Menu'
@@ -20,6 +19,13 @@ const styles = theme => ({
   title: {
     marginTop: theme.spacing.unit
   },
+  container: {
+    padding: theme.spacing.unit,
+    paddingLeft: theme.spacing.unit * 2,
+    paddingRight: theme.spacing.unit * 2,
+    color: theme.palette.text.secondary,
+    height: '100%'
+  },
   inputField: {
     marginTop: theme.spacing.unit,
     marginBottom: theme.spacing.unit,
@@ -28,6 +34,13 @@ const styles = theme => ({
     },
     width: '100%',
     maxWidth: '400px'
+  },
+  actionsPaper: {
+    paddingTop: theme.spacing.unit,
+    paddingBottom: theme.spacing.unit,
+    textAlign: 'right',
+    marginTop: theme.spacing.unit,
+    width: '100%'
   }
 })
 
@@ -131,90 +144,84 @@ class StudentForm extends Component {
     const { classes, groups } = this.props
     return (
       <div className="StudentForm">
-        <Card>
-          <CardContent>
-            {/* make formKeys a little more sophisticated and draw from it, esp text or required */}
-            {['chineseName', 'pinyinName', 'englishName'].map(
-              (field, index) => (
-                <TextField
-                  margin="dense"
-                  className={classes.inputField}
-                  id={field}
-                  key={index}
-                  label={this.unCamelCase(field)}
-                  value={this.inputValueOldOrNew(student, field)}
-                  type="text"
-                  onChange={this.handleChange(field)}
-                  fullWidth
-                />
-              )
-            )}
+        <div className={classes.container}>
+          {/* make formKeys a little more sophisticated and draw from it, esp text or required */}
+          {['chineseName', 'pinyinName', 'englishName'].map((field, index) => (
             <TextField
               margin="dense"
-              id="select-group"
-              select
-              label="Assigned class"
               className={classes.inputField}
-              value={
-                this.state.groupId === ''
-                  ? ''
-                  : this.state.groupId
-                    ? this.state.groupId
-                    : student.group ? student.group.id : ''
-              }
-              onChange={this.handleChange('groupId')}
+              id={field}
+              key={index}
+              label={this.unCamelCase(field)}
+              value={this.inputValueOldOrNew(student, field)}
+              type="text"
+              onChange={this.handleChange(field)}
               fullWidth
-              SelectProps={{
-                MenuProps: {
-                  className: classes.menu
-                }
-              }}
-            >
-              {groups.map(option => (
-                <MenuItem key={option.id} value={option.id}>
-                  {option.name}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              id="date"
-              label="Date of Birth"
-              type="date"
-              fullwidth="true"
-              value={this.inputValueOldOrNew(student, 'dateOfBirth').slice(
-                0,
-                10
-              )}
-              onChange={this.handleChange('dateOfBirth')}
-              className={classes.inputField}
-              InputLabelProps={{
-                shrink: true
-              }}
             />
-            <RadioGroup
-              aria-label="gender"
-              name="gender"
-              className={classes.inputField}
-              value={this.inputValueOldOrNew(student, 'gender')}
-              onChange={this.handleChange('gender')}
-            >
-              <FormControlLabel value="M" control={<Radio />} label="Male" />
-              <FormControlLabel value="F" control={<Radio />} label="Female" />
-            </RadioGroup>
+          ))}
+          <TextField
+            margin="dense"
+            id="select-group"
+            select
+            label="Assigned class"
+            className={classes.inputField}
+            value={
+              this.state.groupId === ''
+                ? ''
+                : this.state.groupId
+                  ? this.state.groupId
+                  : student.group ? student.group.id : ''
+            }
+            onChange={this.handleChange('groupId')}
+            fullWidth
+            SelectProps={{
+              MenuProps: {
+                className: classes.menu
+              }
+            }}
+          >
+            {groups.map(option => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.name}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            id="date"
+            label="Date of Birth"
+            type="date"
+            fullwidth="true"
+            value={this.inputValueOldOrNew(student, 'dateOfBirth').slice(0, 10)}
+            onChange={this.handleChange('dateOfBirth')}
+            className={classes.inputField}
+            InputLabelProps={{
+              shrink: true
+            }}
+          />
+          <RadioGroup
+            aria-label="gender"
+            name="gender"
+            className={classes.inputField}
+            value={this.inputValueOldOrNew(student, 'gender')}
+            onChange={this.handleChange('gender')}
+          >
+            <FormControlLabel value="M" control={<Radio />} label="Male" />
+            <FormControlLabel value="F" control={<Radio />} label="Female" />
+          </RadioGroup>
 
-            {this.props.match.params.id !== 'new' && (
-              <DeleteStudent student={student} />
-            )}
-          </CardContent>
-          <Divider />
-          <CardActions>
+          {this.props.match.params.id !== 'new' && (
+            <DeleteStudent student={student} />
+          )}
+        </div>
+        <footer className={classes.actions}>
+          <Paper className={classes.actionsPaper}>
             <Button onClick={this.handleCancel}>Cancel</Button>
             <Button onClick={() => this.revertForm(formKeys)}>Reset</Button>
             <Button onClick={() => this.handleSave(student, formKeys)}>
               Save
             </Button>
-          </CardActions>
-        </Card>
+          </Paper>
+        </footer>
       </div>
     )
   }
