@@ -12,7 +12,7 @@ import Login from './Login'
 import AllStudents from './AllStudents'
 import Student from './Student'
 import NotFound from './NotFound'
-import Group from './Group'
+import HaveClass from './HaveClass'
 
 const styles = theme => ({
   root: {
@@ -36,8 +36,9 @@ class Index extends Component {
           <Route path="/login" component={Login} />
           <Route path="/students" component={AllStudents} />
           <Route exact path="/student" component={AllStudents} />
+          <Route path="/student/:id/:group" component={Student} />
           <Route path="/student/:id" component={Student} />
-          <Route path="/group/:id" component={Group} />
+          <Route path="/haveclass/" component={HaveClass} />
           <Route component={NotFound} />
         </Switch>
       </div>

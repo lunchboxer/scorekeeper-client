@@ -38,11 +38,11 @@ class StudentForm extends Component {
   handleCancel = () => {
     this.props.history.push('/students')
   }
-
+  componentWillMount() {
+    let groupId = this.props.groupId
+    this.setState({ groupId: groupId })
+  }
   handleSave = async (student, formKeys) => {
-    console.log(student)
-    console.log(this.state)
-    console.log(!!this.state.groupId)
     let studentMutationVariables = {}
     formKeys.forEach(key => {
       if (this.state[key] === '') {
@@ -79,7 +79,6 @@ class StudentForm extends Component {
       this.props.history.push('/students/')
     } else {
       studentMutationVariables.id = student.id
-      console.log('gonna update existing student')
       await this._updateStudent(studentMutationVariables)
       this.props.history.push('/students/')
     }
@@ -161,9 +160,6 @@ class StudentForm extends Component {
                 }
               }}
             >
-              <MenuItem key="" value="">
-                None
-              </MenuItem>
               {groups.map(option => (
                 <MenuItem key={option.id} value={option.id}>
                   {option.name}
@@ -221,7 +217,6 @@ class StudentForm extends Component {
     }) // also gotta update the apollo cache
   }
   _updateStudent = async studentMutationVariables => {
-    console.log(studentMutationVariables)
     await this.props.updateStudentMutation({
       variables: studentMutationVariables,
       // the query to update is on a different page, maybe not fetched ever

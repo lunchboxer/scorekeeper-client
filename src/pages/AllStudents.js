@@ -1,24 +1,15 @@
 import React, { Component } from 'react'
-import { Typography, Button, TextField } from 'material-ui'
+import { Typography } from 'material-ui'
+import List from 'material-ui/List'
 import { withStyles } from 'material-ui/styles'
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogTitle
-} from 'material-ui/Dialog'
-import { Link } from 'react-router-dom'
 
 import { graphql, compose } from 'react-apollo'
 
 import Header from '../components/Header'
-import GroupsList from '../components/GroupsList'
-import StudentsList from '../components/StudentsList'
+import GroupList from '../components/GroupList'
+import AddGroupButton from '../components/AddGroupButton'
 import { alphabetizeByName } from '../utilityFunctions'
-import {
-  ALL_GROUPS_QUERY,
-  ALL_STUDENTS_FILTER_GROUP_QUERY,
-  CREATE_GROUP_MUTATION
-} from '../queries'
+import { ALL_GROUPS_QUERY } from '../queries'
 
 const styles = theme => ({
   container: {
@@ -30,99 +21,43 @@ const styles = theme => ({
   title: {
     marginTop: theme.spacing.unit
   },
-  actionButton: {
-    margin: theme.spacing.unit
+  nested: {
+    paddingLeft: theme.spacing.unit * 4
+  },
+  studentlist: {
+    maxWidth: 400
   }
 })
 
 class AllStudents extends Component {
   state = {
-    newGroupDialogOpen: false,
-    newStudentDialogOpen: false,
-    newClassName: ''
+    open: true
   }
-  handleNewClassClose = () => {
-    this.setState({ newGroupDialogOpen: false })
-  }
-  handleChange = prop => event => {
-    this.setState({ [prop]: event.target.value })
-  }
-
   render() {
     if (this.props.allGroupsQuery && this.props.allGroupsQuery.loading) {
-      return <div>Loading</div>
-    }
-    if (
-      this.props.allLonelyStudentsQuery &&
-      this.props.allLonelyStudentsQuery.loading
-    ) {
       return <div>Loading</div>
     }
 
     const groups = this.props.allGroupsQuery.allGroups
     const sortedGroups = alphabetizeByName([...groups])
-    const lonelyStudents = this.props.allLonelyStudentsQuery.allStudents
     const { classes } = this.props
 
     return (
       <div className="Students">
         <Header title="Students" />
-        <div className={classes.container}>
-          <Button
-            className={classes.actionButton}
-            component={Link}
-            to="/student/new/"
-            raised
-          >
-            Add a student
-          </Button>
-
-          <Button
-            className={classes.actionButton}
-            onClick={() => this.setState({ newGroupDialogOpen: true })}
-            raised
-          >
-            Add a class
-          </Button>
-        </div>
-        <Dialog
-          open={this.state.newGroupDialogOpen}
-          onRequestClose={this.handleNewClassClose}
-        >
-          <DialogTitle>Add a new class</DialogTitle>
-          <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Class name"
-              type="text"
-              value={this.state.newClassName}
-              onChange={this.handleChange('newClassName')}
-              fullWidth
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleNewClassClose} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={() => this._createGroup()} color="primary">
-              Create
-            </Button>
-          </DialogActions>
-        </Dialog>
+        <div className={classes.container} />
         {groups.length > 0 ? (
           <div className={classes.groupedList}>
             <div className={classes.container}>
               <Typography type="subheading" className={classes.title}>
-                Students grouped by class
+                Students grouped by class (click to edit)
               </Typography>
-              <Typography type="body1">(click a student to edit)</Typography>
             </div>
-            <GroupsList
-              groups={sortedGroups}
-              updateStoreAfterDeleteGroup={this._updateCacheAfterDeleteGroup}
-            />
+            <List className={classes.studentlist}>
+              {sortedGroups.map(group => (
+                <GroupList key={group.id} group={group} />
+              ))}
+            </List>
           </div>
         ) : (
           <div className={classes.container}>
@@ -131,17 +66,8 @@ class AllStudents extends Component {
             </Typography>
           </div>
         )}
-        {lonelyStudents.length > 0 && (
-          <div>
-            <div className={classes.container}>
-              <Typography type="subheading" className={classes.title}>
-                Students not assigned to a class
-              </Typography>
-              <Typography type="body1">(click to edit)</Typography>
-            </div>
-            <StudentsList students={lonelyStudents} groups={sortedGroups} />
-          </div>
-        )}
+
+        <AddGroupButton />
       </div>
     )
   }
@@ -155,11 +81,6 @@ class AllStudents extends Component {
         data.allGroups.push(createGroup)
         store.writeQuery({ query: ALL_GROUPS_QUERY, data })
       }
-      // refetchQueries: [
-      //   {
-      //     query: ALL_GROUPS_QUERY
-      //   }
-      // ]
     })
     this.setState({ newClassName: '' })
     this.handleNewClassClose()
@@ -173,11 +94,6 @@ class AllStudents extends Component {
 }
 
 export default compose(
-  graphql(ALL_STUDENTS_FILTER_GROUP_QUERY, {
-    name: 'allLonelyStudentsQuery',
-    options: { variables: { group: null } }
-  }),
   graphql(ALL_GROUPS_QUERY, { name: 'allGroupsQuery' }),
-  graphql(CREATE_GROUP_MUTATION, { name: 'createGroupMutation' }),
   withStyles(styles)
 )(AllStudents)

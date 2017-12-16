@@ -6,12 +6,6 @@ import { Link } from 'react-router-dom'
 const styles = theme => ({})
 
 class StudentsList extends Component {
-  state = {
-    EditStudentDialogOpen: false
-  }
-  handleEditStudentDialogOpen = id => {
-    this.setState({ EditStudentDialogOpen: true })
-  }
   render() {
     const students = this.props.students
     const classes = this.props.classes

@@ -23,7 +23,10 @@ class Student extends Component {
       return (
         <div className="Student">
           <Header title="Add a Student" />
-          <StudentForm groups={sortedGroups} />
+          <StudentForm
+            groups={sortedGroups}
+            groupId={this.props.match.params.group}
+          />
         </div>
       )
     }
@@ -43,7 +46,6 @@ class Student extends Component {
   }
 }
 
-// const STUDENT_QUERY_VARIABLES = { id: this.props.match.params.id }
 export default compose(
   graphql(STUDENT_QUERY, {
     name: 'studentQuery',
