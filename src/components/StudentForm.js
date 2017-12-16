@@ -19,6 +19,15 @@ import DeleteStudent from './DeleteStudent'
 const styles = theme => ({
   title: {
     marginTop: theme.spacing.unit
+  },
+  inputField: {
+    marginTop: theme.spacing.unit,
+    marginBottom: theme.spacing.unit,
+    [theme.breakpoints.up('sm')]: {
+      margin: theme.spacing.unit * 2
+    },
+    width: '100%',
+    maxWidth: '400px'
   }
 })
 
@@ -129,6 +138,7 @@ class StudentForm extends Component {
               (field, index) => (
                 <TextField
                   margin="dense"
+                  className={classes.inputField}
                   id={field}
                   key={index}
                   label={this.unCamelCase(field)}
@@ -144,7 +154,7 @@ class StudentForm extends Component {
               id="select-group"
               select
               label="Assigned class"
-              className={classes.textField}
+              className={classes.inputField}
               value={
                 this.state.groupId === ''
                   ? ''
@@ -166,31 +176,32 @@ class StudentForm extends Component {
                 </MenuItem>
               ))}
             </TextField>
-
+            <TextField
+              id="date"
+              label="Date of Birth"
+              type="date"
+              fullwidth="true"
+              value={this.inputValueOldOrNew(student, 'dateOfBirth').slice(
+                0,
+                10
+              )}
+              onChange={this.handleChange('dateOfBirth')}
+              className={classes.inputField}
+              InputLabelProps={{
+                shrink: true
+              }}
+            />
             <RadioGroup
               aria-label="gender"
               name="gender"
-              className={classes.group}
+              className={classes.inputField}
               value={this.inputValueOldOrNew(student, 'gender')}
               onChange={this.handleChange('gender')}
             >
               <FormControlLabel value="M" control={<Radio />} label="Male" />
               <FormControlLabel value="F" control={<Radio />} label="Female" />
             </RadioGroup>
-            <TextField
-              id="date"
-              label="Date of Birth"
-              type="date"
-              value={this.inputValueOldOrNew(student, 'dateOfBirth').slice(
-                0,
-                10
-              )}
-              onChange={this.handleChange('dateOfBirth')}
-              className={classes.textField}
-              InputLabelProps={{
-                shrink: true
-              }}
-            />
+
             {this.props.match.params.id !== 'new' && (
               <DeleteStudent student={student} />
             )}
