@@ -26,8 +26,16 @@ class DeleteGroup extends Component {
       variables: {
         id
       },
-      // gotta update the cache, queries on different page so just refetchQueries
-      refetchQueries: [{ query: ALL_GROUPS_QUERY }] // change this to update
+      update: (store, { data: { deleteGroup } }) => {
+        const data = store.readQuery({ query: ALL_GROUPS_QUERY })
+        data.allGroups = data.allGroups.filter(group => {
+          return group.id !== deleteGroup.id
+        })
+        store.writeQuery({
+          query: ALL_GROUPS_QUERY,
+          data
+        })
+      }
     })
   }
 
