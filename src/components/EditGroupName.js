@@ -34,8 +34,12 @@ class EditClassButton extends Component {
         variables: { id: group.id, name: groupName }
       })
     }
-    this.setState({ groupName: undefined })
     this.setState({ open: false })
+    this.setState({ groupName: undefined })
+  }
+  handleCancel = () => {
+    this.setState({ open: false })
+    this.setState({ groupName: undefined })
   }
   render() {
     const { classes, group } = this.props
@@ -65,9 +69,7 @@ class EditClassButton extends Component {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => this.setState({ open: false })}>
-              Cancel
-            </Button>
+            <Button onClick={this.handleCancel}>Cancel</Button>
             <Button onClick={() => this.editGroupName(group)}>Save</Button>
           </DialogActions>
         </Dialog>
