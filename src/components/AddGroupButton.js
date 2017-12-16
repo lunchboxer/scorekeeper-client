@@ -21,11 +21,12 @@ const styles = theme => ({
 
 class AddClassButton extends Component {
   state = {
-    newGroupDialogOpen: false,
+    open: false,
     newClassName: ''
   }
-  handleNewClassClose = () => {
-    this.setState({ newGroupDialogOpen: false })
+  handleCancel = () => {
+    this.setState({ newClassName: '' })
+    this.setState({ open: false })
   }
   handleChange = prop => event => {
     this.setState({ [prop]: event.target.value })
@@ -37,14 +38,14 @@ class AddClassButton extends Component {
       <div>
         <Button
           className={classes.actionButton}
-          onClick={() => this.setState({ newGroupDialogOpen: true })}
+          onClick={() => this.setState({ open: true })}
         >
           <GroupAddIcon className={classes.leftIcon} />
           Add a class
         </Button>
         <Dialog
-          open={this.state.newGroupDialogOpen}
-          onRequestClose={this.handleNewClassClose}
+          open={this.state.open}
+          onRequestClose={() => this.setState({ open: false })}
         >
           <DialogTitle>Add a new class</DialogTitle>
           <DialogContent>
@@ -60,21 +61,15 @@ class AddClassButton extends Component {
             />
           </DialogContent>
           <DialogActions>
-            <Button
-              onClick={() => this.setState({ newGroupDialogOpen: false })}
-              color="primary"
-            >
-              Cancel
-            </Button>
-            <Button onClick={() => this._createGroup()} color="primary">
-              Create
-            </Button>
+            <Button onClick={this.handleCancel}>Cancel</Button>
+            <Button onClick={() => this._createGroup()}>Create</Button>
           </DialogActions>
         </Dialog>
       </div>
     )
   }
   _createGroup = async () => {
+    this.setState({ open: false })
     const { newClassName } = this.state
     await this.props.createGroupMutation({
       variables: { name: newClassName },
@@ -85,7 +80,6 @@ class AddClassButton extends Component {
       }
     })
     this.setState({ newClassName: '' })
-    this.setState({ newGroupDialogOpen: false })
   }
 }
 
