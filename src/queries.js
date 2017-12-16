@@ -36,7 +36,7 @@ export const CREATE_STUDENT_MUTATION = gql`
     $englishName: String
     $gender: Gender
     $dateOfBirth: DateTime
-    $groupId: ID
+    $groupId: ID!
     $pinyinName: String
   ) {
     createStudent(
