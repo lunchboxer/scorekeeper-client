@@ -36,6 +36,7 @@ class NavMenu extends Component {
       { Home: '/' },
       { 'Student List': '/students/' },
       { 'My Profile': '/me' },
+      { 'Have Class': '/haveclass/' },
       { 'About Scorekeeper': '/about' }
     ]
 

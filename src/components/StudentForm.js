@@ -140,6 +140,7 @@ class StudentForm extends Component {
       'gender',
       'dateOfBirth'
     ]
+
     const student = this.props.student || false
     const { classes, groups } = this.props
     return (

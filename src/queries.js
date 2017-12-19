@@ -236,3 +236,54 @@ export const REMOVE_STUDENT_FROM_GROUP_MUTATION = gql`
     }
   }
 `
+
+// Class Sessions
+export const SOON_SESSIONS_QUERY = gql`
+  query($endsAfter: DateTime!, $startsBefore: DateTime!) {
+    allClassSessions(
+      filter: {
+        AND: [{ endsAt_gte: $endsAfter }, { startsAt_lte: $startsBefore }]
+      }
+    ) {
+      id
+      startsAt
+      endsAt
+      groups {
+        name
+      }
+    }
+  }
+`
+export const UPCOMING_SESSIONS_QUERY = gql`
+  query($startsAfter: DateTime!) {
+    allClassSessions(filter: { startsAt_gte: $startsAfter }) {
+      id
+      startsAt
+      endsAt
+      groups {
+        name
+      }
+    }
+  }
+`
+export const CREATE_CLASS_SESSION_MUTATION = gql`
+  mutation CreateClassSessionMutation(
+    $groupsIds: [ID!]
+    $startsAt: DateTime!
+    $endsAt: DateTime!
+  ) {
+    createClassSession(
+      groupsIds: $groupsIds
+      startsAt: $startsAt
+      endsAt: $endsAt
+    ) {
+      id
+      startsAt
+      endsAt
+      groups {
+        id
+        name
+      }
+    }
+  }
+`

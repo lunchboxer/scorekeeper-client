@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 export const addUpPoints = pointsArray => {
   return pointsArray.reduce((total, point) => {
     return total + point.value
@@ -18,3 +20,43 @@ export const alphabetizeByName = list => {
   })
 }
 
+export const formatDateString = (startDate, endDate) => {
+  const startDateObj = new Date(startDate)
+  let startDateString = startDateObj.toDateString()
+  const endDateObj = new Date(endDate)
+  const start = moment(startDate)
+  const end = moment(endDate)
+  let startTimeString = ''
+  let endTimeString = ''
+
+  startDateString = start.calendar(null, {
+    sameDay: '[Today]',
+    nextDay: '[Tomorrow]',
+    nextWeek: 'dddd',
+    lastDay: '[Yesterday]',
+    lastWeek: '[Last] dddd',
+    sameElse: 'ddd MMM Do'
+  })
+  if (startDateObj.getMinutes() === 0) {
+    startTimeString = start.format('h')
+  } else {
+    startTimeString = start.format('h:mm')
+  }
+  if (endDateObj.getMinutes() === 0) {
+    endTimeString = end.format('h')
+  } else {
+    endTimeString = end.format('h:mm')
+  }
+  if (start.format('a') !== end.format('a')) {
+    startTimeString = startTimeString + ' ' + start.format('a')
+  }
+  return (
+    startDateString +
+    ' ' +
+    startTimeString +
+    '-' +
+    endTimeString +
+    ' ' +
+    end.format('a')
+  )
+}
