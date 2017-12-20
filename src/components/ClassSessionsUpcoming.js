@@ -14,7 +14,11 @@ const styles = theme => ({
   }
 })
 const UpcomingSessionsList = props => {
-  const sessions = props.futureSessions
+  const sessions = props.futureSessions.filter(session => {
+    const startDate = new Date(session.startsAt)
+    const now = new Date()
+    return startDate > now
+  })
 
   return (
     <div className={props.classes.container}>
