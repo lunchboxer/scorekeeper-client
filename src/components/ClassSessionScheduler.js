@@ -49,7 +49,6 @@ class ClassSessionScheduler extends Component {
 
   handleChange = prop => event => {
     this.setState({ [prop]: event.target.value })
-    console.log('changed', prop, 'to', this.state[prop])
   }
   handleCancel = () => {
     this.setState({
@@ -66,7 +65,12 @@ class ClassSessionScheduler extends Component {
       startsAt: startUTC,
       endsAt: endUTC
     }
-    await this.props.createClassSessionMutation({ variables })
+    await this.props.createClassSessionMutation({
+      variables,
+      update: (store, { data: { createClassSession } }) => {
+        this.props.updateCacheOnCreate(store, createClassSession)
+      }
+    })
     this.handleCancel()
   }
 

@@ -3,7 +3,7 @@ import moment from 'moment'
 import { MenuItem } from 'material-ui'
 import ListItemText from 'material-ui/List/ListItemText'
 
-const ClassSessionSelection = ({ session, classes, onClick }) => {
+const ClassSessionSelection = ({ session, classes }) => {
   const start = moment(session.startsAt)
   const end = moment(session.endsAt)
   const isPast = time => {
@@ -23,7 +23,7 @@ const ClassSessionSelection = ({ session, classes, onClick }) => {
     return startString + '. ' + endString
   }
   return (
-    <MenuItem onClick={onClick}>
+    <MenuItem>
       <ListItemText
         primary={session.groups.map(group => group.name).join(', ')}
         secondary={times(session)}

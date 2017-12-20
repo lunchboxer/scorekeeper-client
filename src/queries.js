@@ -237,35 +237,6 @@ export const REMOVE_STUDENT_FROM_GROUP_MUTATION = gql`
   }
 `
 
-// Class Sessions
-export const SOON_SESSIONS_QUERY = gql`
-  query($endsAfter: DateTime!, $startsBefore: DateTime!) {
-    allClassSessions(
-      filter: {
-        AND: [{ endsAt_gte: $endsAfter }, { startsAt_lte: $startsBefore }]
-      }
-    ) {
-      id
-      startsAt
-      endsAt
-      groups {
-        name
-      }
-    }
-  }
-`
-export const UPCOMING_SESSIONS_QUERY = gql`
-  query($startsAfter: DateTime!) {
-    allClassSessions(filter: { startsAt_gte: $startsAfter }) {
-      id
-      startsAt
-      endsAt
-      groups {
-        name
-      }
-    }
-  }
-`
 export const CREATE_CLASS_SESSION_MUTATION = gql`
   mutation CreateClassSessionMutation(
     $groupsIds: [ID!]
@@ -278,12 +249,64 @@ export const CREATE_CLASS_SESSION_MUTATION = gql`
       endsAt: $endsAt
     ) {
       id
+      createdAt
       startsAt
       endsAt
       groups {
         id
         name
       }
+      points {
+        id
+      }
+    }
+  }
+`
+// recently should be maybe 15 minutes before now
+// we want all the future class session, but also give some margin of error
+// for one's we may still want to join
+export const FUTURE_CLASS_SESSIONS_QUERY = gql`
+  query FutureClassSessionsQuery($recently: DateTime!) {
+    allClassSessions(
+      orderBy: startsAt_ASC
+      filter: { OR: [{ startsAt_gte: $recently }, { endsAt_gte: $recently }] }
+    ) {
+      id
+      createdAt
+      startsAt
+      endsAt
+      groups {
+        id
+        name
+      }
+      points {
+        id
+      }
+    }
+  }
+`
+export const PAST_CLASS_SESSIONS_QUERY = gql`
+  query PastClassSessionsQuery($now: DateTime!) {
+    allClassSessions(orderBy: endsAt_DESC, filter: { endsAt_lte: $now }) {
+      id
+      createdAt
+      startsAt
+      endsAt
+      groups {
+        id
+        name
+      }
+      points {
+        id
+      }
+    }
+  }
+`
+
+export const DELETE_CLASS_SESSION_MUTATION = gql`
+  mutation DeleteClassSessionMutation($id: ID!) {
+    deleteClassSession(id: $id) {
+      id
     }
   }
 `

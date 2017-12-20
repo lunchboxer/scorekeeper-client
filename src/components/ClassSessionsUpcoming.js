@@ -1,10 +1,11 @@
 import React from 'react'
 import { Typography } from 'material-ui'
-import { graphql, compose } from 'react-apollo'
-import { UPCOMING_SESSIONS_QUERY } from '../queries'
 import List, { ListItemText, ListItem } from 'material-ui/List'
 import { formatDateString } from '../utilityFunctions'
 import { withStyles } from 'material-ui'
+import ListItemIcon from 'material-ui/List/ListItemIcon'
+
+import DeleteClassSessionButton from './DeleteClassSessionButton'
 
 const styles = theme => ({
   container: {
@@ -13,10 +14,7 @@ const styles = theme => ({
   }
 })
 const UpcomingSessionsList = props => {
-  if (props.upcomingSessionsQuery && props.upcomingSessionsQuery.loading) {
-    return <div>Loading</div>
-  }
-  const sessions = props.upcomingSessionsQuery.allClassSessions
+  const sessions = props.futureSessions
 
   return (
     <div className={props.classes.container}>
@@ -31,6 +29,14 @@ const UpcomingSessionsList = props => {
                 primary={session.groups.map(group => group.name).join(', ')}
                 secondary={formatDateString(session.startsAt, session.endsAt)}
               />
+              {session.points.length === 0 && (
+                <ListItemIcon>
+                  <DeleteClassSessionButton
+                    session={session}
+                    updateCacheOnDelete={props.updateCacheOnDelete}
+                  />
+                </ListItemIcon>
+              )}
             </ListItem>
           ))}
         </List>
@@ -39,14 +45,4 @@ const UpcomingSessionsList = props => {
   )
 }
 
-const now = new Date()
-const variables = {
-  startsAfter: now.toISOString()
-}
-export default compose(
-  graphql(UPCOMING_SESSIONS_QUERY, {
-    name: 'upcomingSessionsQuery',
-    options: { variables }
-  }),
-  withStyles(styles)
-)(UpcomingSessionsList)
+export default withStyles(styles)(UpcomingSessionsList)
