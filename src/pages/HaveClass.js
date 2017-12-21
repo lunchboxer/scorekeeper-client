@@ -46,7 +46,7 @@ class HaveClass extends Component {
 export default compose(
   graphql(ONE_CLASS_SESSION_QUERY, {
     name: 'oneClassSessionQuery',
-    options: ({ match }) => ({ variables: { id: match.params.id } })
+    options: ({ match }) => ({ variables: { id: match.params.session } })
   }),
   withStyles(styles)
 )(HaveClass)

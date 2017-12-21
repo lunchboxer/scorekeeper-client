@@ -40,7 +40,7 @@ class Index extends Component {
           <Route path="/student/:id/:group" component={Student} />
           <Route path="/student/:id" component={Student} />
           <Route path="/sessions" component={ClassSessions} />
-          <Route path="/haveclass/:id" component={HaveClass} />
+          <Route path="/haveclass/:session" component={HaveClass} />
           <Route component={NotFound} />
         </Switch>
       </div>
