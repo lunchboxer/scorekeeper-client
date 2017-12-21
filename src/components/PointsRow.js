@@ -1,30 +1,70 @@
 import React, { Component } from 'react'
 import { TableRow, TableCell } from 'material-ui/Table'
-import { STUDENT_SESSION_POINTS_QUERY } from '../queries'
+import { STUDENT_SESSION_POINTS_QUERY, CREATE_POINT_MUTATION } from '../queries'
 import { graphql, compose } from 'react-apollo'
 import { withStyles } from 'material-ui/styles'
+import Menu, { MenuItem } from 'material-ui/Menu'
 
 const styles = theme => ({
   pointsCell: {
-    textAlign: 'center'
+    textAlign: 'center',
+    fontSize: '1.5rem'
+  },
+  englishName: {
+    fontSize: '1.2rem'
   }
 })
 
 class PointsRow extends Component {
+  state = {
+    anchorEl: null,
+    open: false
+  }
+
+  handleClick = event => {
+    this.setState({ open: true, anchorEl: event.currentTarget })
+  }
+  handleClose = () => {
+    this.setState({ open: false })
+  }
+
+  sumOfPointValues = points => {
+    return points.reduce((sum, point) => {
+      return sum + point.value
+    }, 0)
+  }
+  handlePointClick = async value => {
+    const variables = {
+      value: value,
+      student: this.props.student.id,
+      session: this.props.sessionid
+    }
+    await this.props.createPointMutation({
+      variables,
+      update: (store, { data: { createPoint } }) => {
+        const { variables } = this.props.studentSessionPointsQuery
+        const data = store.readQuery({
+          query: STUDENT_SESSION_POINTS_QUERY,
+          variables
+        })
+        data.allPoints.push(createPoint)
+        store.writeQuery({
+          query: STUDENT_SESSION_POINTS_QUERY,
+          variables,
+          data
+        })
+      }
+    }) // gotta update too
+    this.handleClose()
+  }
   render() {
     const { student, classes } = this.props
     const points = this.props.studentSessionPointsQuery.allPoints
 
-    const sumOfPointValues = points => {
-      return points.reduce((sum, point) => {
-        return sum + point.value
-      }, 0)
-    }
-
     return (
       <TableRow>
-        <TableCell>
-          {student.englishName}
+        <TableCell onClick={this.handleClick}>
+          <span className={classes.englishName}>{student.englishName}</span>
           <br />
           {student.chineseName + '(' + student.pinyinName + ')'}
         </TableCell>
@@ -33,9 +73,19 @@ class PointsRow extends Component {
           this.props.studentSessionPointsQuery.loading ? (
             <p>loading...</p>
           ) : (
-            sumOfPointValues(points)
+            this.sumOfPointValues(points)
           )}
         </TableCell>
+        <Menu
+          id="simple-menu"
+          anchorEl={this.state.anchorEl}
+          open={this.state.open}
+          onClose={this.handleClose}
+        >
+          <MenuItem onClick={() => this.handlePointClick(-1)}>-1</MenuItem>
+          <MenuItem onClick={() => this.handlePointClick(1)}>+1</MenuItem>
+          <MenuItem onClick={() => this.handlePointClick(2)}>+2</MenuItem>
+        </Menu>
       </TableRow>
     )
   }
@@ -46,6 +96,9 @@ export default compose(
     options: ({ student, sessionid }) => ({
       variables: { student: student.id, session: sessionid }
     })
+  }),
+  graphql(CREATE_POINT_MUTATION, {
+    name: 'createPointMutation'
   }),
   withStyles(styles)
 )(PointsRow)

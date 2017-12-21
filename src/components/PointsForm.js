@@ -9,8 +9,11 @@ import Table, {
 import { withStyles } from 'material-ui/styles'
 
 const styles = theme => ({
-  table: {
-    minWidth: 300
+  pointsHeader: {
+    textAlign: 'center'
+  },
+  title: {
+    fontSize: '1.4rem'
   }
 })
 
@@ -19,8 +22,10 @@ const PointsForm = ({ group, classes, sessionid }) => {
     <Table className={classes.table}>
       <TableHead>
         <TableRow>
-          <TableCell>{group.name}</TableCell>
-          <TableCell numeric>Points</TableCell>
+          <TableCell className={classes.title}>{group.name}</TableCell>
+          <TableCell className={classes.pointsHeader}>
+            <span>Points</span>
+          </TableCell>
         </TableRow>
       </TableHead>
       <TableBody>

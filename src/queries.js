@@ -342,12 +342,16 @@ export const STUDENT_SESSION_POINTS_QUERY = gql`
     allPoints(
       filter: { student: { id: $student }, classSession: { id: $session } }
     ) {
-      student {
-        id
-        englishName
-      }
-      value
       id
+      value
+    }
+  }
+`
+export const CREATE_POINT_MUTATION = gql`
+  mutation CreatePointMutation($student: ID!, $session: ID!, $value: Int!) {
+    createPoint(value: $value, studentId: $student, classSessionId: $session) {
+      id
+      value
     }
   }
 `
