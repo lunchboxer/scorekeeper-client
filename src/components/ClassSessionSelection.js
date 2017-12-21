@@ -2,6 +2,7 @@ import React from 'react'
 import moment from 'moment'
 import { MenuItem } from 'material-ui'
 import ListItemText from 'material-ui/List/ListItemText'
+import { Link } from 'react-router-dom'
 
 const ClassSessionSelection = ({ session, classes }) => {
   const start = moment(session.startsAt)
@@ -23,7 +24,7 @@ const ClassSessionSelection = ({ session, classes }) => {
     return startString + '. ' + endString
   }
   return (
-    <MenuItem>
+    <MenuItem component={Link} to={'/haveclass/' + session.id}>
       <ListItemText
         primary={session.groups.map(group => group.name).join(', ')}
         secondary={times(session)}

@@ -34,9 +34,9 @@ class NavMenu extends Component {
     const { classes } = this.props
     const navLinks = [
       { Home: '/' },
-      { 'Student List': '/students/' },
+      { 'Student List': '/students' },
       { 'My Profile': '/me' },
-      { 'Have Class': '/haveclass/' },
+      { 'Class Sessions': '/sessions' },
       { 'About Scorekeeper': '/about' }
     ]
 

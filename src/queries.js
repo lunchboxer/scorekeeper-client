@@ -310,3 +310,44 @@ export const DELETE_CLASS_SESSION_MUTATION = gql`
     }
   }
 `
+
+export const ONE_CLASS_SESSION_QUERY = gql`
+  query oneClassSessionQuery($id: ID!) {
+    ClassSession(id: $id) {
+      id
+      createdAt
+      startsAt
+      endsAt
+      groups {
+        id
+        name
+        students {
+          id
+          englishName
+          chineseName
+          pinyinName
+        }
+      }
+      points {
+        id
+        student {
+          id
+        }
+      }
+    }
+  }
+`
+export const STUDENT_SESSION_POINTS_QUERY = gql`
+  query StudentSessionPointsQuery($student: ID!, $session: ID!) {
+    allPoints(
+      filter: { student: { id: $student }, classSession: { id: $session } }
+    ) {
+      student {
+        id
+        englishName
+      }
+      value
+      id
+    }
+  }
+`

@@ -1,81 +1,52 @@
 import React, { Component } from 'react'
-import Header from '../components/Header'
+import Typography from 'material-ui/Typography'
 import { withStyles } from 'material-ui/styles'
-import ClassSessionScheduler from '../components/ClassSessionScheduler'
-import ClassSessionSelector from '../components/ClassSessionSelector'
-import ClassSessionsUpcoming from '../components/ClassSessionsUpcoming'
-import ClassSessionsPast from '../components/ClassSessionsPast'
-import { Divider } from 'material-ui'
+import Header from '../components/Header'
+import PointsForm from '../components/PointsForm'
 import { graphql, compose } from 'react-apollo'
-import { FUTURE_CLASS_SESSIONS_QUERY } from '../queries'
+import { ONE_CLASS_SESSION_QUERY } from '../queries'
 
 const styles = theme => ({
   container: {
     padding: theme.spacing.unit,
     paddingLeft: theme.spacing.unit * 2,
     paddingRight: theme.spacing.unit * 2
+  },
+  title: {
+    paddingBottom: theme.spacing.unit * 3
   }
 })
+
 class HaveClass extends Component {
   render() {
-    if (
-      this.props.futureClassSessionsQuery &&
-      this.props.futureClassSessionsQuery.loading
-    ) {
-      return <div>Loading</div>
-    }
-    const futureSessions = this.props.futureClassSessionsQuery.allClassSessions
-
-    const updateCacheOnCreate = (store, createClassSession) => {
-      const { variables } = this.props.futureClassSessionsQuery
-      const data = store.readQuery({
-        query: FUTURE_CLASS_SESSIONS_QUERY,
-        variables
-      })
-      data.allClassSessions.push(createClassSession)
-      store.writeQuery({ query: FUTURE_CLASS_SESSIONS_QUERY, variables, data })
-    }
-    const updateCacheOnDelete = (store, deleteClassSession) => {
-      const { variables } = this.props.futureClassSessionsQuery
-      const data = store.readQuery({
-        query: FUTURE_CLASS_SESSIONS_QUERY,
-        variables
-      })
-      data.allClassSessions = data.allClassSessions.filter(session => {
-        return session.id !== deleteClassSession.id
-      })
-      store.writeQuery({ query: FUTURE_CLASS_SESSIONS_QUERY, variables, data })
-    }
+    const session = this.props.oneClassSessionQuery.ClassSession
     const { classes } = this.props
     return (
       <div className="HaveClass">
-        <Header title="Have class" />
+        <Header title="Have Class" />
         <div className={classes.container}>
-          <ClassSessionSelector futureSessions={futureSessions} />
-          <Divider />
-          <ClassSessionScheduler updateCacheOnCreate={updateCacheOnCreate} />
-          <Divider />
-          <ClassSessionsUpcoming
-            futureSessions={futureSessions}
-            updateCacheOnDelete={updateCacheOnDelete}
-          />
-          <Divider />
-          <ClassSessionsPast />
+          {this.props.oneClassSessionQuery &&
+          this.props.oneClassSessionQuery.loading ? (
+            <Typography type="subheading">Loading</Typography>
+          ) : (
+            session.groups.map(group => (
+              <PointsForm
+                key={group.id}
+                sessionid={session.id}
+                group={group}
+                points={session.points}
+              />
+            ))
+          )}
         </div>
       </div>
     )
   }
 }
-
-const now = new Date()
-const variables = {
-  recently: new Date(now.valueOf() - 15 * 60000).toISOString()
-}
-
 export default compose(
-  graphql(FUTURE_CLASS_SESSIONS_QUERY, {
-    name: 'futureClassSessionsQuery',
-    options: { variables }
+  graphql(ONE_CLASS_SESSION_QUERY, {
+    name: 'oneClassSessionQuery',
+    options: ({ match }) => ({ variables: { id: match.params.id } })
   }),
   withStyles(styles)
 )(HaveClass)
