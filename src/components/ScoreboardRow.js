@@ -34,14 +34,7 @@ class ScoreboardRow extends Component {
       return sum + point.value
     }, 0)
   }
-  buildpointsstring = points => {
-    let pointsstring = ''
-    this.sumOfPointValues(points)
-    for (let i = 0; i < this.sumOfPointValues(points); i++) {
-      pointsstring += '*'
-    }
-    return pointsstring
-  }
+  
   rangeOfPointValues = points => {
     const sum = this.sumOfPointValues(points)
     return [...Array(sum).keys()]
