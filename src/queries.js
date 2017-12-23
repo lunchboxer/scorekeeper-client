@@ -285,6 +285,28 @@ export const FUTURE_CLASS_SESSIONS_QUERY = gql`
     }
   }
 `
+// starts before soon and ends after recently
+export const CURRENT_CLASS_SESSIONS_QUERY = gql`
+  query CurrentClassSessionsQuery($soon: DateTime!, $recently: DateTime!) {
+    allClassSessions(
+      orderBy: startsAt_ASC
+      filter: { AND: [{ startsAt_lte: $soon }, { endsAt_gte: $recently }] }
+    ) {
+      id
+      startsAt
+      endsAt
+      groups {
+        id
+        name
+        students {
+          id
+          englishName
+        }
+      }
+    }
+  }
+`
+
 export const PAST_CLASS_SESSIONS_QUERY = gql`
   query PastClassSessionsQuery($now: DateTime!) {
     allClassSessions(orderBy: endsAt_DESC, filter: { endsAt_lte: $now }) {
@@ -352,6 +374,26 @@ export const CREATE_POINT_MUTATION = gql`
     createPoint(value: $value, studentId: $student, classSessionId: $session) {
       id
       value
+    }
+  }
+`
+
+export const NEW_POINT_STUDENT_SESSION_SUBSCRIPTION = gql`
+  subscription newPointSubscription($student: ID!, $session: ID!) {
+    Point(
+      filter: {
+        AND: [
+          { mutation_in: [CREATED] }
+          {
+            node: { student: { id: $student }, classSession: { id: $session } }
+          }
+        ]
+      }
+    ) {
+      node {
+        id
+        value
+      }
     }
   }
 `

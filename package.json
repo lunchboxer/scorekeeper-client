@@ -6,6 +6,7 @@
   "dependencies": {
     "apollo-client": "^2.1.0",
     "apollo-client-preset": "^1.0.4",
+    "apollo-link-ws": "^1.0.4",
     "graphql": "^0.11.7",
     "graphql-tag": "^2.6.0",
     "jss": "^8.1.0",
@@ -22,6 +23,7 @@
     "react-router-dom": "^4.2.2",
     "react-scripts": "latest",
     "recompose": "latest",
+    "subscriptions-transport-ws": "^0.9.4",
     "typeface-roboto": "0.0.45"
   },
   "scripts": {

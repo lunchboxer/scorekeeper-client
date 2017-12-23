@@ -14,6 +14,7 @@ import Student from './Student'
 import NotFound from './NotFound'
 import ClassSessions from './ClassSessions'
 import HaveClass from './HaveClass'
+import ScoreboardLoader from './ScoreboardLoader'
 
 const styles = theme => ({
   root: {
@@ -41,6 +42,7 @@ class Index extends Component {
           <Route path="/student/:id" component={Student} />
           <Route path="/sessions" component={ClassSessions} />
           <Route path="/haveclass/:session" component={HaveClass} />
+          <Route path="/scoreboard" component={ScoreboardLoader} />
           <Route component={NotFound} />
         </Switch>
       </div>
