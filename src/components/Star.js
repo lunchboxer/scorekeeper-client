@@ -2,18 +2,27 @@ import React from 'react'
 import withStyles from 'material-ui/styles/withStyles'
 
 const styles = theme => ({
+  '@keyframes dropin': {
+    '0%': { width: 0 },
+    '75%': { width: '6em' },
+    '100%': { width: '5em' }
+  },
   star: {
     width: '5em',
     padding: theme.spacing.unit,
-    fill: '#00aeff',
-    margin: 'auto'
+    margin: 'auto',
+    animation: 'dropin 0.2s 1'
   }
 })
 
 const Star = ({ index, classes }) => {
+  const hue = index * 30
   return (
     <svg
       className={classes.star}
+      style={{
+        fill: `hsl(${hue}, 100%, 50%)`
+      }}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 32.218 32.218"
     >
