@@ -16,8 +16,7 @@ const styles = theme => ({
   },
   container: {
     display: 'flex',
-    alignContent: 'center',
-    height: '6em'
+    width: '100%'
   },
   stars: {
     display: 'flex',

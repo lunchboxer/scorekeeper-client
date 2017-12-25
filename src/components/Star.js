@@ -1,5 +1,6 @@
 import React from 'react'
 import withStyles from 'material-ui/styles/withStyles'
+import 'animate.css'
 
 const styles = theme => ({
   '@keyframes dropin': {
@@ -11,6 +12,7 @@ const styles = theme => ({
     width: '5em',
     padding: theme.spacing.unit,
     margin: 'auto',
+    height: '5em',
     animation: 'dropin 0.2s 1'
   }
 })
@@ -19,8 +21,11 @@ const Star = ({ index, classes }) => {
   const hue = index * 30
   return (
     <svg
-      className={classes.star}
+      className="animated flip"
       style={{
+        width: '5em',
+        padding: '0.3em',
+        height: '5em',
         fill: `hsl(${hue}, 100%, 50%)`
       }}
       xmlns="http://www.w3.org/2000/svg"

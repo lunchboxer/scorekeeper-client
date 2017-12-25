@@ -4,6 +4,7 @@
   "description": "a reactive scoreboard app for the classroom",
   "private": true,
   "dependencies": {
+    "animate.css": "^3.5.2",
     "apollo-client": "^2.1.0",
     "apollo-client-preset": "^1.0.4",
     "apollo-link-ws": "^1.0.4",
