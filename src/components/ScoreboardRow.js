@@ -7,6 +7,8 @@ import {
 } from '../queries'
 import { withStyles } from 'material-ui/styles'
 import Star from './Star'
+import goodSoundFile from '../sounds/ui-confirmation-alert-a5min.wav'
+import badSoundFile from '../sounds/quick-fart.wav'
 
 const styles = theme => ({
   name: {
@@ -28,6 +30,11 @@ const styles = theme => ({
 })
 
 class ScoreboardRow extends Component {
+  constructor(props) {
+    super(props)
+    this.goodsound = new Audio(goodSoundFile)
+    this.badsound = new Audio(badSoundFile)
+  }
   sumOfPointValues = points => {
     return points.reduce((sum, point) => {
       return sum + point.value
@@ -51,6 +58,11 @@ class ScoreboardRow extends Component {
           subscriptionData.data.Point.node,
           ...previous.allPoints
         ]
+        if (subscriptionData.data.Point.node.value > 0) {
+          this.goodsound.play()
+        } else {
+          this.badsound.play()
+        }
         const result = {
           ...previous,
           allPoints: newAllPoints
