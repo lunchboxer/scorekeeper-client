@@ -4,6 +4,7 @@ import { STUDENT_SESSION_POINTS_QUERY, CREATE_POINT_MUTATION } from '../queries'
 import { graphql, compose } from 'react-apollo'
 import { withStyles } from 'material-ui/styles'
 import Menu, { MenuItem } from 'material-ui/Menu'
+import ClearIcon from 'material-ui-icons/Clear'
 
 const styles = theme => ({
   pointsCell: {
@@ -77,11 +78,14 @@ class PointsRow extends Component {
           )}
         </TableCell>
         <Menu
-          id="simple-menu"
+          id="points-menu"
           anchorEl={this.state.anchorEl}
           open={this.state.open}
           onClose={this.handleClose}
         >
+          <MenuItem onClick={this.handleClose}>
+            <ClearIcon />
+          </MenuItem>
           <MenuItem onClick={() => this.handlePointClick(-1)}>-1</MenuItem>
           <MenuItem onClick={() => this.handlePointClick(1)}>+1</MenuItem>
           <MenuItem onClick={() => this.handlePointClick(2)}>+2</MenuItem>
