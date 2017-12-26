@@ -39,6 +39,7 @@ const styles = theme => ({
       backgroundColor: 'none'
     },
     '50%': {
+      boxShadow: '0 0 20px #444',
       backgroundColor: '#444'
     }
   }
