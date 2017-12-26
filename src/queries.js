@@ -340,6 +340,13 @@ export const ONE_CLASS_SESSION_QUERY = gql`
       createdAt
       startsAt
       endsAt
+      stage
+      attendances {
+        id
+        student {
+          id
+        }
+      }
       groups {
         id
         name
@@ -359,6 +366,25 @@ export const ONE_CLASS_SESSION_QUERY = gql`
     }
   }
 `
+export const ACTIVATE_CLASS_SESSION = gql`
+  mutation ActivateClassSession($id: ID!) {
+    updateClassSession(id: $id, stage: Active) {
+      id
+      stage
+    }
+  }
+`
+
+export const START_CLASS_SESSION = gql`
+  mutation StartClassSession($id: ID!) {
+    updateClassSession(id: $id, stage: Started) {
+      id
+      stage
+    }
+  }
+`
+
+// Points
 export const STUDENT_SESSION_POINTS_QUERY = gql`
   query StudentSessionPointsQuery($student: ID!, $session: ID!) {
     allPoints(
