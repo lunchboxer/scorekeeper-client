@@ -86,7 +86,7 @@ class GroupList extends Component {
                       component={Link}
                       to={'/student/' + student.id}
                       key={student.id}
-                      className={[classes.flex, classes.nested]}
+                      className={classes.nested}
                     >
                       <ListItemIcon>
                         <Avatar>

@@ -22,9 +22,12 @@ const styles = theme => ({
 })
 
 class Header extends Component {
-  state = {
-    anchorEl: null,
-    drawerOpen: false
+  constructor(props) {
+    super(props)
+    this.state = {
+      anchorEl: null,
+      drawerOpen: false
+    }
   }
 
   handleCloseDrawer = () => {
@@ -59,10 +62,7 @@ class Header extends Component {
 
     return (
       <div className="Header">
-        <Drawer
-          open={this.state.drawerOpen}
-          onRequestClose={this.handleCloseDrawer}
-        >
+        <Drawer open={this.state.drawerOpen} onClose={this.handleCloseDrawer}>
           <div
             tabIndex={0}
             role="button"
