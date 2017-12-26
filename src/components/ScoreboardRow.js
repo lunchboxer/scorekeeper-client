@@ -10,6 +10,8 @@ import Star from './Star'
 import goodSoundFile from '../sounds/ui-confirmation-alert-a5min.wav'
 import badSoundFile from '../sounds/quick-fart.wav'
 
+const glowTimeout = 4000
+
 const styles = theme => ({
   name: {
     padding: theme.spacing.unit * 2,
@@ -26,6 +28,19 @@ const styles = theme => ({
     padding: 0,
     paddingLeft: theme.spacing.unit * 2,
     paddingRight: theme.spacing.unit * 2
+  },
+  glow: {
+    display: 'flex',
+    width: '100%',
+    animation: `glow ${glowTimeout}ms ease-out 0s`
+  },
+  '@keyframes glow': {
+    '0%, 100%': {
+      backgroundColor: 'none'
+    },
+    '50%': {
+      backgroundColor: '#444'
+    }
   }
 })
 
@@ -34,6 +49,7 @@ class ScoreboardRow extends Component {
     super(props)
     this.goodsound = new Audio(goodSoundFile)
     this.badsound = new Audio(badSoundFile)
+    this.state = { glow: false }
   }
   sumOfPointValues = points => {
     return points.reduce((sum, point) => {
@@ -44,6 +60,17 @@ class ScoreboardRow extends Component {
   rangeOfPointValues = points => {
     const sum = this.sumOfPointValues(points)
     return [...Array(sum).keys()]
+  }
+  highlightPointsChange = value => {
+    if (value > 0) {
+      this.goodsound.play()
+    } else {
+      this.badsound.play()
+    }
+    this.setState({ glow: true })
+    setTimeout(() => {
+      this.setState({ glow: false })
+    }, glowTimeout)
   }
 
   subscribeToNewPoints = () => {
@@ -58,11 +85,7 @@ class ScoreboardRow extends Component {
           subscriptionData.data.Point.node,
           ...previous.allPoints
         ]
-        if (subscriptionData.data.Point.node.value > 0) {
-          this.goodsound.play()
-        } else {
-          this.badsound.play()
-        }
+        this.highlightPointsChange(subscriptionData.data.Point.node.value)
         const result = {
           ...previous,
           allPoints: newAllPoints
@@ -89,7 +112,7 @@ class ScoreboardRow extends Component {
     const points = this.props.studentSessionPointsQuery.allPoints
 
     return (
-      <div className={classes.container}>
+      <div className={this.state.glow ? classes.glow : classes.container}>
         <div className={classes.name}>
           <Typography type="display3">{student.englishName}</Typography>
         </div>
