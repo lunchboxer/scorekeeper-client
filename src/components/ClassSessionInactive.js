@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Typography from 'material-ui/Typography/Typography'
 import { graphql } from 'react-apollo'
-import { ACTIVATE_CLASS_SESSION } from '../queries'
+import { UPDATE_CLASS_SESSION_STAGE } from '../queries'
 
 // haveclass view for inactive ClassSession. Activate class Session
 // should immediate move on to ClassSessionActive
@@ -19,7 +19,7 @@ class ClassSessionInactive extends Component {
   }
 }
 
-export default graphql(ACTIVATE_CLASS_SESSION, {
+export default graphql(UPDATE_CLASS_SESSION_STAGE, {
   name: 'activateClassSession',
-  options: ({ session }) => ({ variables: { id: session.id } })
+  options: ({ session }) => ({ variables: { id: session.id, stage: 'Active' } })
 })(ClassSessionInactive)

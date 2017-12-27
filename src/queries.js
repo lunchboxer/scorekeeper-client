@@ -366,9 +366,9 @@ export const ONE_CLASS_SESSION_QUERY = gql`
     }
   }
 `
-export const ACTIVATE_CLASS_SESSION = gql`
-  mutation ActivateClassSession($id: ID!) {
-    updateClassSession(id: $id, stage: Active) {
+export const UPDATE_CLASS_SESSION_STAGE = gql`
+  mutation UpdateClassSessionStage($id: ID!, $stage: Stage!) {
+    updateClassSession(id: $id, stage: $stage) {
       id
       stage
     }
