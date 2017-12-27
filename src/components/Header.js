@@ -107,7 +107,7 @@ class Header extends Component {
                     horizontal: 'right'
                   }}
                   open={open}
-                  onRequestClose={this.handleRequestClose}
+                  onClose={this.handleRequestClose}
                 >
                   <MenuItem onClick={this.handleProfileLink}>Profile</MenuItem>
                   <MenuItem onClick={this.handleLogout}>Log out</MenuItem>

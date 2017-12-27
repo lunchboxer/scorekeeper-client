@@ -37,7 +37,7 @@ class DeleteClassSessionButton extends Component {
         </IconButton>
         <Dialog
           open={this.state.dialogOpen}
-          onRequestClose={() => this.setState({ dialogOpen: false })}
+          onClose={() => this.setState({ dialogOpen: false })}
         >
           <DialogTitle>Really delete class session?</DialogTitle>
           <DialogContent>

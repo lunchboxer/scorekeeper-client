@@ -78,7 +78,7 @@ class DeleteStudent extends Component {
         </div>
         <Dialog
           open={this.state.deleteDialogOpen}
-          onRequestClose={this.handleDeleteDialogClose}
+          onClose={this.handleDeleteDialogClose}
         >
           <DialogTitle>
             Delete student: {this.state.studentToDelete.chineseName}?

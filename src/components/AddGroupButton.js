@@ -45,7 +45,7 @@ class AddClassButton extends Component {
         </Button>
         <Dialog
           open={this.state.open}
-          onRequestClose={() => this.setState({ open: false })}
+          onClose={() => this.setState({ open: false })}
         >
           <DialogTitle>Add a new class</DialogTitle>
           <DialogContent>

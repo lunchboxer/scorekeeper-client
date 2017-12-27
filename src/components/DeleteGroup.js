@@ -48,7 +48,7 @@ class DeleteGroup extends Component {
         </ListItemIcon>
         <Dialog
           open={this.state.dialogOpen}
-          onRequestClose={() => this.setState({ dialogOpen: false })}
+          onClose={() => this.setState({ dialogOpen: false })}
         >
           <DialogTitle>Really delete {group.name}?</DialogTitle>
           <DialogContent>

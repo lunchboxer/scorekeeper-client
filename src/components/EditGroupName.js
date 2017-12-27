@@ -54,7 +54,7 @@ class EditClassButton extends Component {
         </IconButton>
         <Dialog
           open={this.state.open}
-          onRequestClose={() => this.setState({ open: false })}
+          onClose={() => this.setState({ open: false })}
         >
           <DialogTitle>Change class name</DialogTitle>
           <DialogContent>
