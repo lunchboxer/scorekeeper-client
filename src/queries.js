@@ -423,3 +423,53 @@ export const NEW_POINT_STUDENT_SESSION_SUBSCRIPTION = gql`
     }
   }
 `
+export const STUDENT_ATTENDANCE_QUERY = gql`
+  query StudentAttendanceQuery($student: ID!, $session: ID!) {
+    allAttendances(
+      filter: {
+        AND: [{ student: { id: $student } }, { classSession: { id: $session } }]
+      }
+    ) {
+      id
+      createdAt
+      status
+    }
+  }
+`
+
+export const ADD_ATTENDANCE_MUTATION = gql`
+  mutation AddAttendanceMutation(
+    $student: ID!
+    $session: ID!
+    $status: AttendanceStatus!
+  ) {
+    createAttendance(
+      studentId: $student
+      classSessionId: $session
+      status: $status
+    ) {
+      student {
+        id
+      }
+      classSession {
+        id
+      }
+      status
+      id
+    }
+  }
+`
+export const UPDATE_ATTENDANCE_MUTATION = gql`
+  mutation UpdateAttendanceMutation($id: ID!, $status: AttendanceStatus!) {
+    updateAttendance(id: $id, status: $status) {
+      student {
+        id
+      }
+      classSession {
+        id
+      }
+      status
+      id
+    }
+  }
+`

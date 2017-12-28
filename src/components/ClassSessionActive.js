@@ -18,11 +18,10 @@ class ClassSessionActive extends Component {
     const session = this.props.session
     return (
       <div>
-        <Typography type="subheading">Active</Typography>
+        <Typography type="title">Who's here?</Typography>
         {session.groups.map(group => (
-          <AttendanceForm key={group.id} group={group} />
+          <AttendanceForm key={group.id} group={group} session={session} />
         ))}
-        <Button>All present</Button>
         <Button onClick={() => this.handleStartClass(session)}>
           Start Class
         </Button>
