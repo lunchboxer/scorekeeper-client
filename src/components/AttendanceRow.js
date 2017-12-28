@@ -13,7 +13,7 @@ import Typography from 'material-ui/Typography/Typography'
 class AttendanceRow extends Component {
   handleToggle = async attendance => {
     console.log('attendance:', attendance)
-    if (attendance.length === 0) {
+    if (!attendance) {
       await this.props.addAttendanceMutation({
         variables: {
           student: this.props.student.id,
@@ -21,9 +21,15 @@ class AttendanceRow extends Component {
           status: 'Present'
         },
         update: (store, { data: { createAttendance } }) => {
-          const data = store.readQuery({ query: STUDENT_ATTENDANCE_QUERY })
-          data.allGroups.push(createAttendance)
-          store.writeQuery({ query: STUDENT_ATTENDANCE_QUERY, data })
+          const { variables } = this.props.studentAttendanceQuery
+          const data = store.readQuery({
+            query: STUDENT_ATTENDANCE_QUERY,
+            variables
+          })
+          console.log(data)
+          console.log(createAttendance)
+          data.allAttendances.push(createAttendance)
+          store.writeQuery({ query: STUDENT_ATTENDANCE_QUERY, variables, data })
         }
       })
     } else {
@@ -45,7 +51,12 @@ class AttendanceRow extends Component {
       return <Typography>Loading...</Typography>
     }
     const { student } = this.props
+    console.log(
+      'allAttendances:',
+      this.props.studentAttendanceQuery.allAttendances
+    )
     const attendance = this.props.studentAttendanceQuery.allAttendances[0]
+    console.log(attendance)
     const status = attendance ? attendance.status : undefined
     return (
       <div>

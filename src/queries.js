@@ -249,9 +249,11 @@ export const CREATE_CLASS_SESSION_MUTATION = gql`
       endsAt: $endsAt
     ) {
       id
-      createdAt
       startsAt
       endsAt
+      attendances {
+        id
+      }
       groups {
         id
         name
@@ -272,9 +274,11 @@ export const FUTURE_CLASS_SESSIONS_QUERY = gql`
       filter: { OR: [{ startsAt_gte: $recently }, { endsAt_gte: $recently }] }
     ) {
       id
-      createdAt
       startsAt
       endsAt
+      attendances {
+        id
+      }
       groups {
         id
         name
@@ -295,6 +299,9 @@ export const CURRENT_CLASS_SESSIONS_QUERY = gql`
       id
       startsAt
       endsAt
+      attendances {
+        id
+      }
       groups {
         id
         name
@@ -311,9 +318,11 @@ export const PAST_CLASS_SESSIONS_QUERY = gql`
   query PastClassSessionsQuery($now: DateTime!) {
     allClassSessions(orderBy: endsAt_DESC, filter: { endsAt_lte: $now }) {
       id
-      createdAt
       startsAt
       endsAt
+      attendances {
+        id
+      }
       groups {
         id
         name
@@ -337,7 +346,6 @@ export const ONE_CLASS_SESSION_QUERY = gql`
   query oneClassSessionQuery($id: ID!) {
     ClassSession(id: $id) {
       id
-      createdAt
       startsAt
       endsAt
       stage
@@ -431,7 +439,6 @@ export const STUDENT_ATTENDANCE_QUERY = gql`
       }
     ) {
       id
-      createdAt
       status
     }
   }
