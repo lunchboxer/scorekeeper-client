@@ -49,14 +49,15 @@ class ClassSessionsPast extends Component {
                   primary={session.groups.map(group => group.name).join(', ')}
                   secondary={formatDateString(session.startsAt, session.endsAt)}
                 />
-                {session.points.length === 0 && (
-                  <ListItemIcon>
-                    <DeleteClassSessionButton
-                      session={session}
-                      updateCacheOnDelete={updateCacheOnDelete}
-                    />
-                  </ListItemIcon>
-                )}
+                {session.points.length === 0 &&
+                  session.attendances.length === 0 && (
+                    <ListItemIcon>
+                      <DeleteClassSessionButton
+                        session={session}
+                        updateCacheOnDelete={updateCacheOnDelete}
+                      />
+                    </ListItemIcon>
+                  )}
               </ListItem>
             ))}
           </List>
