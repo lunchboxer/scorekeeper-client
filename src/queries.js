@@ -351,6 +351,7 @@ export const ONE_CLASS_SESSION_QUERY = gql`
       stage
       attendances {
         id
+        status
         student {
           id
         }
@@ -477,6 +478,14 @@ export const UPDATE_ATTENDANCE_MUTATION = gql`
       }
       status
       id
+    }
+  }
+`
+
+export const MARK_OTHERS_ABSENT_MUTATION = gql`
+  mutation MarkOthersAbsentMutation($sessionId: ID!) {
+    markOthersAbsent(sessionId: $sessionId) {
+      changed
     }
   }
 `
