@@ -68,7 +68,7 @@ class PointsRow extends Component {
         <TableCell onClick={this.handleClick}>
           <span className={classes.englishName}>{student.englishName}</span>
           <br />
-          {student.chineseName + '(' + student.pinyinName + ')'}
+          {student.chineseName + ' (' + student.pinyinName + ')'}
         </TableCell>
         <TableCell className={classes.pointsCell}>
           {this.props.studentSessionPointsQuery &&
