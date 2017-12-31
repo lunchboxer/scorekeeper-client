@@ -17,7 +17,17 @@ const styles = theme => ({
   }
 })
 
-const PointsForm = ({ group, classes, sessionid }) => {
+const PointsForm = ({ group, classes, session }) => {
+  const studentPresence = student => {
+    const studentAttendance = session.attendances.find(attendance => {
+      return attendance.student.id === student.id
+    })
+    if (studentAttendance) {
+      return studentAttendance.status
+    } else {
+      return undefined
+    }
+  }
   return (
     <Table className={classes.table}>
       <TableHead>
@@ -29,9 +39,13 @@ const PointsForm = ({ group, classes, sessionid }) => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {group.students.map(student => (
-          <PointsRow key={student.id} student={student} sessionid={sessionid} />
-        ))}
+        {group.students.map(
+          student =>
+            (studentPresence(student) === 'Present' ||
+              studentPresence(student) === 'Late') && (
+              <PointsRow key={student.id} student={student} session={session} />
+            )
+        )}
       </TableBody>
     </Table>
   )

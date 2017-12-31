@@ -38,7 +38,7 @@ class PointsRow extends Component {
     const variables = {
       value: value,
       student: this.props.student.id,
-      session: this.props.sessionid
+      session: this.props.session.id
     }
     await this.props.createPointMutation({
       variables,
@@ -55,9 +55,10 @@ class PointsRow extends Component {
           data
         })
       }
-    }) // gotta update too
+    })
     this.handleClose()
   }
+
   render() {
     const { student, classes } = this.props
     const points = this.props.studentSessionPointsQuery.allPoints
@@ -97,8 +98,8 @@ class PointsRow extends Component {
 export default compose(
   graphql(STUDENT_SESSION_POINTS_QUERY, {
     name: 'studentSessionPointsQuery',
-    options: ({ student, sessionid }) => ({
-      variables: { student: student.id, session: sessionid }
+    options: ({ student, session }) => ({
+      variables: { student: student.id, session: session.id }
     })
   }),
   graphql(CREATE_POINT_MUTATION, {
